@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Premium Property Valuation</title>
+    <link rel="stylesheet" href="/static/house.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+</head>
+<body class="page-house">
+
+    <div class="mesh-gradient"></div>
+
+    <div class="content-wrapper">
+        <header class="main-header">
+            <a href="/" class="btn-back">← Dashboard</a>
+            <div class="badge-container">
+                <span class="status-dot"></span>
+                <span class="badge-text">AI VALUATION ACTIVE</span>
+            </div>
+        </header>
+
+        <main class="valuation-card">
+            <div class="card-intro">
+                <h1>Property <span>Valuation</span></h1>
+                <p>Enter property specifications to receive a high-precision market estimate.</p>
+            </div>
+
+            <form method="POST" action="/house_predict" class="prediction-form">
+                <div class="form-row">
+                    <div class="input-field">
+                        <label>BHK Configuration</label>
+                        <div class="input-box">
+                            <span class="field-icon">🏘️</span>
+                            <input type="number" name="bhk" placeholder="e.g. 3" required min="1">
+                        </div>
+                    </div>
+                    <div class="input-field">
+                        <label>Total Area (sqft)</label>
+                        <div class="input-box">
+                            <span class="field-icon">📐</span>
+                            <input type="number" name="area" placeholder="e.g. 1500" required>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="input-field full">
+                    <label>Select Location Node</label>
+                    <div class="input-box">
+                        <span class="field-icon">📍</span>
+                        <select name="location" required>
+                            <option value="" disabled selected>Choose a location...</option>
+                            <option>Andheri</option>
+                            <option>Bandra</option>
+                            <option>Borivali</option>
+                            <option>Dadar</option>
+                            <option>Malad</option>
+                            <option>Thane</option>
+                            <option>Juhu</option>
+                            <option>Kandivali</option>
+                            <option>Powai</option>
+                            <option>Vikhroli</option>
+                            <option>Jogeshwari</option>
+                            <option>Goregaon</option>
+                        </select>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-evaluate">
+                    <span>Calculate Market Value</span>
+                </button>
+            </form>
+
+            {% if price %}
+            <div class="results-wrapper">
+
+    <div class="result-section">
+        <div class="result-label">ESTIMATED MARKET PRICE</div>
+        <div class="result-value">₹ {{ price }} {{ unit }}</div>
+        <p class="result-note">
+            Price calculated based on current market liquidity and regional trends.
+        </p>
+    </div>
+
+    <div class="result-section insights">
+        <div class="result-label">PROPERTY INSIGHTS</div>
+
+        <p>✔ Estimated Price: ₹ {{ price }} {{ unit }}</p>
+        <p>✔ Price Range: ₹ {{ low_price }} – {{ high_price }} {{ unit }}</p>
+        <p>✔ Price / Sqft: ₹ {{ price_per_sqft }}</p>
+        <p>✔ Location Rating: {{ location_rating }}</p>
+        <p>✔ Market Status: {{ market_status }}</p>
+        <p>✔ 5-Year Value: ₹ {{ future_price }} {{ unit }}</p>
+    </div>
+
+</div>
+{% endif %}
+
+
+
+</body>
+</html>

@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <title>Analytics Dashboard</title>
+    <link rel="stylesheet" href="/static/analytics.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: { extend: { animation: { 'pulse-glow': 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;' } } }
+        }
+    </script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/analytics.min.css" rel="stylesheet">
+    <style>
+        .chart-container { height: 350px; width: 100%; position: relative; }
+        .model-card { transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94); }
+        .model-card:hover { transform: translateY(-8px) scale(1.02); box-shadow: 0 35px 60px -15px rgba(0, 0, 0, 0.6); }
+        .chart-glow { filter: drop-shadow(0 0 20px rgba(59, 130, 246, 0.5)); }
+        .metric-badge { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-slate-900 via-indigo-900/50 to-slate-900 dark min-h-screen py-12 px-4 sm:px-6 lg:px-8 text-white overflow-x-hidden">
+
+    <div class="max-w-7xl mx-auto">
+        <!-- Animated Header -->
+        <div class="text-center mb-16">
+            <div class="inline-block p-4 bg-slate-800/50 backdrop-blur-xl rounded-3xl border border-slate-700/50 mb-6">
+                <h1 class="text-5xl md:text-7xl font-black bg-gradient-to-r from-blue-400 via-purple-400 to-cyan-400 bg-clip-text text-transparent animate-pulse-glow">
+                    <i class="fas fa-chart-line mr-4 text-6xl"></i>Model Analytics
+                </h1>
+            </div>
+            <p class="text-xl md:text-2xl text-slate-300 max-w-3xl mx-auto opacity-90 font-medium">Stunning interactive visualizations with creative gradients, particles, and immersive animations.</p>
+        </div>
+
+        <!-- Creative Models Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 gap-8 mb-16">
+            {% for model, data in model_data.items() %}
+            <div class="model-card bg-gradient-to-br from-slate-800/90 via-slate-700/70 to-slate-900/90 backdrop-blur-3xl rounded-3xl shadow-2xl border border-gradient-to-r border-blue-500/30 overflow-hidden relative group">
+                <!-- Floating Particles Background -->
+                <div class="absolute inset-0 opacity-20">
+                    <div class="absolute top-10 left-10 w-20 h-20 bg-blue-500/20 rounded-full blur-xl animate-pulse" style="animation-delay: 0s;"></div>
+                    <div class="absolute top-20 right-20 w-16 h-16 bg-purple-500/20 rounded-full blur-xl animate-pulse" style="animation-delay: 1s;"></div>
+                    <div class="absolute bottom-20 left-20 w-24 h-24 bg-cyan-500/20 rounded-full blur-xl animate-pulse" style="animation-delay: 2s;"></div>
+                </div>
+                
+                <!-- Model Header with Sparkle Effect -->
+                <div class="relative p-8 pt-12 pb-8 z-10">
+                    <div class="flex items-start justify-between mb-6">
+                        <div>
+                            <h3 class="text-3xl md:text-4xl font-black bg-gradient-to-r from-white via-slate-200 to-slate-400 bg-clip-text text-transparent drop-shadow-lg">{{ model }}</h3>
+                            <div class="flex items-center mt-2 text-sm text-slate-400">
+                                <i class="fas fa-bolt mr-2 text-emerald-400"></i>Live Data
+                            </div>
+                        </div>
+                        <div class="p-3 bg-gradient-to-r from-blue-500/20 to-purple-500/20 rounded-2xl backdrop-blur-sm border border-blue-500/30 group-hover:rotate-12 transition-all duration-700">
+                            <i class="fas fa-robot text-3xl opacity-90 text-blue-400"></i>
+                        </div>
+                    </div>
+                    
+                    <!-- Enhanced Last Prediction -->
+                    <div class="p-6 bg-gradient-to-r from-slate-900/80 to-transparent rounded-2xl backdrop-blur-xl border border-slate-600/50 relative overflow-hidden">
+                        <div class="absolute inset-0 bg-gradient-to-r from-emerald-500/10 to-cyan-500/10 -skew-x-12 -translate-x-8 group-hover:translate-x-0 transition-transform duration-1000"></div>
+                        <div class="relative text-center">
+                            <div class="text-lg font-semibold text-slate-400 uppercase tracking-wider mb-2">Latest Prediction</div>
+                            <div class="text-4xl md:text-5xl font-black bg-gradient-to-r from-emerald-400 via-cyan-400 to-blue-400 bg-clip-text text-transparent drop-shadow-2xl">
+                                {{ "%.2f"|format(data['values'][-1]) }}
+                            </div>
+                            {% if data['values']|length > 1 %}
+                            <div class="text-sm text-slate-400 mt-2 font-mono">+{{ "%.1f"|format((data['values'][-1] - data['values'][-2]) * 100) }}% ↑</div>
+                            {% else %}
+                            <div class="text-sm text-slate-400 mt-2 font-mono">no change</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Super Creative Chart -->
+                <div class="p-8 relative">
+                    <div class="chart-container chart-glow">
+                        <canvas id="chart{{ loop.index }}"></canvas>
+                    </div>
+                    <div class="absolute -top-6 right-8 w-12 h-12 bg-gradient-to-r from-purple-500 to-pink-500 rounded-2xl flex items-center justify-center shadow-2xl border-4 border-white/20 animate-spin-slow" style="--speed: 20s;">
+                        <i class="fas fa-sparkles text-white text-xl"></i>
+                    </div>
+                </div>
+            </div>
+
+            <script>
+                (function() {
+                    const ctx = document.getElementById('chart{{ loop.index }}').getContext('2d');
+                    const chartType = '{{ "line" if loop.index % 3 == 1 else "bar" if loop.index % 3 == 2 else "doughnut" }}';
+                    const colors = ['#3b82f6', '#ec4899', '#10b981', '#f59e0b', '#06b6d4', '#8b5cf6'];
+                    const index = {{ loop.index - 1 }};
+                    
+                    const gradient = ctx.createLinearGradient(0, 0, 0, 400);
+                    gradient.addColorStop(0, colors[index % colors.length] + 'CC');
+                    gradient.addColorStop(1, colors[index % colors.length] + '22');
+                    
+                    const strokeGradient = ctx.createLinearGradient(0, 0, 0, 400);
+                    strokeGradient.addColorStop(0, colors[index % colors.length]);
+                    strokeGradient.addColorStop(1, colors[(index + 1) % colors.length]);
+                    
+                    new Chart(ctx, {
+                        type: chartType,
+                        data: {
+                            labels: {{ data['dates']|tojson }},
+                            datasets: [{
+                                label: '{{ model }} Performance',
+                                data: {{ data['values']|tojson }},
+                                backgroundColor: chartType === 'doughnut' ? colors : gradient,
+                                borderColor: strokeGradient,
+                                borderWidth: 4,
+                                fill: true,
+                                tension: 0.5,
+                                pointBackgroundColor: (ctx) => {
+                                    const index = ctx.dataIndex;
+                                    return colors[(index + {{ loop.index }}) % colors.length];
+                                },
+                                pointBorderColor: '#ffffff',
+                                pointBorderWidth: 3,
+                                pointRadius: ctx => (ctx.parsed.y > Math.max(...{{ data['values']|tojson }}) * 0.8 ? 10 : 6),
+                                pointHoverRadius: 12,
+                                pointHoverBorderWidth: 4,
+                                pointStyle: 'circle',
+                                segment: {
+                                    backgroundColor: (ctx) => {
+                                        if (ctx.p0.parsed.y > ctx.p1.parsed.y) {
+                                            return colors[2] + '80'; // Green glow for rising
+                                        }
+                                        return colors[1] + '80'; // Pink for falling
+                                    }
+                                }
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            interaction: { intersect: false, mode: 'index' },
+                            plugins: {
+                                legend: {
+                                    display: chartType !== 'doughnut',
+                                    position: 'top',
+                                    labels: { 
+                                        padding: 30, 
+                                        usePointStyle: true,
+                                        color: '#e2e8f0',
+                                        font: { size: 16, family: 'inter', weight: 'bold' },
+                                        generateLabels: (chart) => {
+                                            const data = chart.data;
+                                            if (data.labels.length && data.datasets.length) {
+                                                return data.labels.map((label, i) => ({
+                                                    text: `${label}: ${data.datasets[0].data[i]}`,
+                                                    fillStyle: colors[i % colors.length],
+                                                    strokeStyle: '#ffffff',
+                                                    lineWidth: 2
+                                                }));
+                                            }
+                                            return [];
+                                        }
+                                    }
+                                },
+                                tooltip: {
+                                    backgroundColor: 'rgba(17, 24, 39, 0.95)',
+                                    titleColor: '#ffffff',
+                                    bodyColor: '#e2e8f0',
+                                    borderColor: '#3b82f6',
+                                    borderWidth: 2,
+                                    cornerRadius: 12,
+                                    displayColors: true,
+                                    padding: 16,
+                                    callbacks: {
+                                        title: (ctx) => ctx[0].label,
+                                        label: (ctx) => `${ctx.dataset.label}: ${ctx.parsed.y.toFixed(2)}`
+                                    }
+                                }
+                            },
+                            scales: {
+                                y: {
+                                    beginAtZero: true,
+                                    grid: { 
+                                        color: 'rgba(255,255,255,0.08)',
+                                        drawBorder: false,
+                                        lineWidth: 1
+                                    },
+                                    ticks: { 
+                                        color: '#94a3b8',
+                                        backdropColor: 'transparent',
+                                        font: { size: 12 }
+                                    },
+                                    border: { display: false }
+                                },
+                                x: {
+                                    grid: { display: false },
+                                    ticks: { 
+                                        color: '#94a3b8',
+                                        font: { size: 12 }
+                                    },
+                                    border: { display: false }
+                                }
+                            },
+                            animation: {
+                                duration: 2500,
+                                easing: 'easeOutElastic',
+                                delay: (ctx) => ctx.dataIndex * 100
+                            },
+                            elements: {
+                                bar: { 
+                                    borderRadius: 12,
+                                    borderSkipped: false
+                                },
+                                point: {
+                                    hoverBorderWidth: 4
+                                }
+                            }
+                        },
+                        plugins: [{
+                            id: 'sparkle',
+                            afterDraw(chart) {
+                                const ctx = chart.ctx;
+                                ctx.save();
+                                ctx.globalCompositeOperation = 'screen';
+                                // Add glow particles
+                                chart.data.datasets[0].data.forEach((value, i) => {
+                                    if (value > Math.max(...chart.data.datasets[0].data) * 0.7) {
+                                        const x = chart.scales.x.getPixelForValue(i);
+                                        const y = chart.scales.y.getPixelForValue(value);
+                                        ctx.fillStyle = `rgba(59, 130, 246, ${0.6 - i*0.05})`;
+                                        ctx.beginPath();
+                                        ctx.arc(x, y, 8, 0, Math.PI * 2);
+                                        ctx.fill();
+                                    }
+                                });
+                                ctx.restore();
+                            }
+                        }]
+                    });
+                })();
+            </script>
+            {% endfor %}
+        </div>
+
+        <!-- Premium Back Button -->
+        <div class="text-center">
+            <a href="/" class="group inline-flex items-center px-10 py-5 bg-gradient-to-r from-slate-800/80 via-blue-900/50 to-slate-800/80 backdrop-blur-2xl hover:from-blue-800/70 hover:via-purple-900/60 hover:to-blue-800/70 rounded-3xl shadow-3xl border-2 border-gradient-to-r border-blue-500/40 transition-all duration-500 text-xl font-bold hover:scale-105 hover:shadow-glow">
+                <i class="fas fa-rocket mr-3 text-2xl group-hover:translate-x-2 transition-all duration-500"></i>Back to Home
+            </a>
+        </div>
+    </div>
+
+</body>
+</html>

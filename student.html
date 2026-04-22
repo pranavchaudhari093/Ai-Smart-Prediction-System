@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Academic Forecast | AI Smart System</title>
+    <link rel="stylesheet" href="/static/student.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
+</head>
+<body class="page-student">
+
+    <div class="minimal-bg"></div>
+
+    <div class="main-wrapper">
+        <div class="clean-card">
+            <div class="card-header">
+                <span class="system-badge">ADVANCED ANALYTICS CORE</span>
+                <h1>Academic Performance <span>Forecast</span></h1>
+                <p>Data-driven estimation of final student results.</p>
+            </div>
+
+            <form action="/predict" method="POST" class="forecast-form">
+                <div class="input-grid">
+                    <div class="input-box">
+                        <label>Weekly Study Hours</label>
+                        <div class="input-wrapper">
+                            <span class="input-icon">⏱</span>
+                            <input type="number" name="study_hours" placeholder="0.0" required step="0.1">
+                        </div>
+                    </div>
+
+                    <div class="input-box">
+                        <label>Attendance Rate (%)</label>
+                        <div class="input-wrapper">
+                            <span class="input-icon">📅</span>
+                            <input type="number" name="attendance" placeholder="0-100" required>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="input-box full-width">
+                    <label>Prior Academic Score</label>
+                    <div class="input-wrapper">
+                        <span class="input-icon">📊</span>
+                        <input type="number" name="previous_marks" placeholder="Grade point or marks" required>
+                    </div>
+                </div>
+
+                <!-- BUTTON GROUP -->
+                <div class="btn-group">
+                    <button type="submit" class="action-btn">GENERATE FORECAST</button>
+                    <button type="button" class="action-btn reset-btn"
+                        onclick="window.location.href='/student'">
+                        RESET
+                    </button>
+                </div>
+            </form>
+
+            {% if prediction %}
+            <div class="results-wrapper">
+
+                <div class="prediction-output">
+                    <div class="label">ESTIMATED SCORE</div>
+                    <div class="value">{{ prediction }}%</div>
+                    <div class="track">
+                        <div class="bar" style="width: {{ prediction }}%"></div>
+                    </div>
+                </div>
+
+                <div class="extra-output">
+                    <p><strong>Grade:</strong> {{ grade }}</p>
+                    <p><strong>Status:</strong> {{ status }}</p>
+                    <p><strong>Performance:</strong> {{ performance }}</p>
+                    <p><strong>Improvement:</strong> {{ improvement }}</p>
+
+                    <p><strong>Suggestions:</strong></p>
+                    <ul>
+                        {% for s in suggestions %}
+                            <li>{{ s }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+
+            </div>
+            {% endif %}
+        </div>
+
+        <a href="/" class="nav-back">← Back to Main Dashboard</a>
+    </div>
+
+</body>
+</html>

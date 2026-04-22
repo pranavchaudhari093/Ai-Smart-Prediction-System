@@ -1,0 +1,288 @@
+/* /static/register.css - PREMIUM DARK REGISTER */
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700;800&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.auth-page {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #0a0a1a 0%, #1a0d2e 30%, #16213e 70%, #0f0f23 100%);
+    background-attachment: fixed;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    position: relative;
+    overflow: hidden;
+}
+
+/* CYBERPUNK BACKGROUND */
+.auth-page::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: 
+        radial-gradient(circle at 20% 30%, rgba(0, 212, 255, 0.15) 0%, transparent 50%),
+        radial-gradient(circle at 80% 70%, rgba(57, 255, 20, 0.12) 0%, transparent 50%),
+        radial-gradient(circle at 40% 80%, rgba(255, 0, 128, 0.1) 0%, transparent 50%);
+    animation: bgFloat 20s ease-in-out infinite;
+    pointer-events: none;
+    z-index: 1;
+}
+
+@keyframes bgFloat {
+    0%, 100% { opacity: 0.6; transform: scale(1); }
+    50% { opacity: 0.9; transform: scale(1.05); }
+}
+
+/* MAIN AUTH CARD */
+.auth-card {
+    background: rgba(20, 20, 40, 0.95);
+    backdrop-filter: blur(30px);
+    border-radius: 28px;
+    padding: 4rem 3rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 
+        0 35px 80px rgba(0, 0, 0, 0.6),
+        0 0 0 1px rgba(0, 212, 255, 0.2);
+    width: 100%;
+    max-width: 420px;
+    text-align: center;
+    position: relative;
+    z-index: 10;
+    animation: cardFloatIn 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+@keyframes cardFloatIn {
+    0% { opacity: 0; transform: translateY(50px) scale(0.95); }
+    100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* REGISTER TITLE */
+.auth-card h2 {
+    font-size: 2.5rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, #ffffff, #e0e0e0, #39ff14);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-size: 200% 200%;
+    animation: titleGlow 4s ease-in-out infinite;
+    margin-bottom: 2rem;
+    position: relative;
+}
+
+@keyframes titleGlow {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+}
+
+/* ERROR MESSAGE */
+.error {
+    background: linear-gradient(135deg, rgba(255, 68, 68, 0.2), rgba(255, 0, 0, 0.1));
+    border: 1px solid rgba(255, 68, 68, 0.4);
+    border-radius: 12px;
+    padding: 1rem 1.5rem;
+    color: #ff6b6b;
+    margin-bottom: 2rem;
+    font-size: 0.95rem;
+    font-weight: 500;
+    backdrop-filter: blur(15px);
+    animation: errorShake 0.5s ease-in-out;
+}
+
+@keyframes errorShake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    75% { transform: translateX(5px); }
+}
+
+/* FORM FIELDS */
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    margin-bottom: 2.5rem;
+}
+
+/* ALL INPUT FIELDS */
+input[name="name"],
+input[type="email"],
+input[type="password"] {
+    width: 100%;
+    padding: 1.4rem 1.8rem;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(15px);
+    border: 2px solid rgba(255, 255, 255, 0.15);
+    border-radius: 16px;
+    font-size: 1rem;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    color: #ffffff;
+    transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    outline: none;
+}
+
+input[name="name"]::placeholder,
+input[type="email"]::placeholder,
+input[type="password"]::placeholder {
+    color: rgba(255, 255, 255, 0.5);
+}
+
+input[name="name"]:focus,
+input[type="email"]:focus,
+input[type="password"]:focus {
+    border-color: rgba(0, 212, 255, 0.6);
+    box-shadow: 
+        0 0 0 4px rgba(0, 212, 255, 0.2),
+        0 0 30px rgba(0, 212, 255, 0.15);
+    background: rgba(255, 255, 255, 0.2);
+    transform: translateY(-2px);
+}
+
+input[name="name"]:valid,
+input[type="email"]:valid,
+input[type="password"]:valid {
+    border-color: rgba(57, 255, 20, 0.5);
+}
+
+/* REGISTER BUTTON */
+button {
+    background: linear-gradient(135deg, #39ff14 0%, #00d4ff 50%, #ff0080 100%);
+    color: #1a1a1a;
+    border: none;
+    padding: 1.4rem 3rem;
+    border-radius: 20px;
+    font-size: 1.15rem;
+    font-weight: 800;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    box-shadow: 
+        0 15px 40px rgba(57, 255, 20, 0.4),
+        0 0 0 1px rgba(255, 255, 255, 0.2);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+}
+
+button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.5), transparent);
+    transition: left 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+button:hover::before {
+    left: 100%;
+}
+
+button:hover {
+    transform: translateY(-5px) scale(1.03);
+    box-shadow: 
+        0 30px 70px rgba(57, 255, 20, 0.6),
+        0 0 60px rgba(0, 212, 255, 0.4);
+}
+
+button:active {
+    transform: translateY(-2px) scale(1.01);
+}
+
+/* LOGIN LINK */
+.auth-card a {
+    color: #00d4ff;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 1rem;
+    display: inline-block;
+    margin-top: 1.5rem;
+    padding: 1rem 2rem;
+    border-radius: 16px;
+    border: 2px solid rgba(0, 212, 255, 0.4);
+    backdrop-filter: blur(20px);
+    background: rgba(0, 212, 255, 0.08);
+    transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+.auth-card a::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: rgba(57, 255, 20, 0.15);
+    transition: left 0.6s ease;
+}
+
+.auth-card a:hover::before {
+    left: 0;
+}
+
+.auth-card a:hover {
+    color: #39ff14;
+    border-color: rgba(57, 255, 20, 0.6);
+    background: rgba(57, 255, 20, 0.15);
+    transform: translateY(-3px);
+    box-shadow: 0 15px 40px rgba(57, 255, 20, 0.4);
+}
+
+/* RESPONSIVE */
+@media (max-width: 480px) {
+    .auth-page {
+        padding: 1rem;
+    }
+    
+    .auth-card {
+        padding: 3rem 2rem;
+        margin: 1rem;
+    }
+    
+    .auth-card h2 {
+        font-size: 2.1rem;
+    }
+    
+    button {
+        padding: 1.2rem 2.5rem;
+        font-size: 1rem;
+    }
+    
+    input[name="name"],
+    input[type="email"],
+    input[type="password"] {
+        padding: 1.2rem 1.5rem;
+    }
+}
+
+/* CYBERPUNK SCROLLBAR */
+::-webkit-scrollbar {
+    width: 12px;
+}
+
+::-webkit-scrollbar-track {
+    background: rgba(20, 20, 40, 0.6);
+    border-radius: 6px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: linear-gradient(135deg, #39ff14, #00d4ff);
+    border-radius: 6px;
+    box-shadow: 0 0 20px rgba(57, 255, 20, 0.4);
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(135deg, #ff0080, #ffaa00);
+    box-shadow: 0 0 30px rgba(255, 0, 128, 0.6);
+}

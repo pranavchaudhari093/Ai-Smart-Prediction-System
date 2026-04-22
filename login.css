@@ -1,0 +1,373 @@
+/* /static/login.css - PREMIUM DARK LOGIN */
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700;800&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.auth-page {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #0a0a1a 0%, #1a0d2e 30%, #16213e 70%, #0f0f23 100%);
+    background-attachment: fixed;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    position: relative;
+    overflow: hidden;
+}
+
+/* CYBERPUNK BACKGROUND */
+.auth-page::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: 
+        radial-gradient(circle at 20% 30%, rgba(0, 212, 255, 0.15) 0%, transparent 50%),
+        radial-gradient(circle at 80% 70%, rgba(57, 255, 20, 0.12) 0%, transparent 50%),
+        radial-gradient(circle at 40% 80%, rgba(255, 0, 128, 0.1) 0%, transparent 50%);
+    animation: bgFloat 20s ease-in-out infinite;
+    pointer-events: none;
+    z-index: 1;
+}
+
+@keyframes bgFloat {
+    0%, 100% { opacity: 0.6; transform: scale(1); }
+    50% { opacity: 0.9; transform: scale(1.05); }
+}
+
+/* MAIN AUTH CARD */
+.auth-card {
+    background: rgba(20, 20, 40, 0.95);
+    backdrop-filter: blur(30px);
+    border-radius: 28px;
+    padding: 4rem 3rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 
+        0 35px 80px rgba(0, 0, 0, 0.6),
+        0 0 0 1px rgba(0, 212, 255, 0.2);
+    width: 100%;
+    max-width: 420px;
+    text-align: center;
+    position: relative;
+    z-index: 10;
+    animation: cardFloatIn 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+@keyframes cardFloatIn {
+    0% { opacity: 0; transform: translateY(50px) scale(0.95); }
+    100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* TITLE */
+.auth-card h2 {
+    font-size: 2.5rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, #ffffff, #e0e0e0, #00d4ff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-size: 200% 200%;
+    animation: titleGlow 4s ease-in-out infinite;
+    margin-bottom: 2rem;
+    position: relative;
+}
+
+@keyframes titleGlow {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+}
+
+/* ERROR MESSAGE */
+.error {
+    background: linear-gradient(135deg, rgba(255, 68, 68, 0.2), rgba(255, 0, 0, 0.1));
+    border: 1px solid rgba(255, 68, 68, 0.4);
+    border-radius: 12px;
+    padding: 1rem 1.5rem;
+    color: #ff6b6b;
+    margin-bottom: 2rem;
+    font-size: 0.95rem;
+    font-weight: 500;
+    backdrop-filter: blur(15px);
+    animation: errorShake 0.5s ease-in-out;
+}
+
+@keyframes errorShake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    75% { transform: translateX(5px); }
+}
+
+/* FORM FIELDS */
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    margin-bottom: 2.5rem;
+}
+
+input[type="email"],
+input[type="password"] {
+    width: 100%;
+    padding: 1.4rem 1.8rem;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(15px);
+    border: 2px solid rgba(255, 255, 255, 0.15);
+    border-radius: 16px;
+    font-size: 1rem;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    color: #ffffff;
+    transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    outline: none;
+}
+
+input[type="email"]::placeholder,
+input[type="password"]::placeholder {
+    color: rgba(255, 255, 255, 0.5);
+}
+
+input[type="email"]:focus,
+input[type="password"]:focus {
+    border-color: rgba(0, 212, 255, 0.6);
+    box-shadow: 
+        0 0 0 4px rgba(0, 212, 255, 0.2),
+        0 0 30px rgba(0, 212, 255, 0.15);
+    background: rgba(255, 255, 255, 0.2);
+    transform: translateY(-2px);
+}
+
+input[type="email"]:valid,
+input[type="password"]:valid {
+    border-color: rgba(57, 255, 20, 0.5);
+}
+
+/* LOGIN BUTTON */
+button {
+    background: linear-gradient(135deg, #00d4ff 0%, #39ff14 50%, #ff0080 100%);
+    color: #1a1a1a;
+    border: none;
+    padding: 1.4rem 3rem;
+    border-radius: 20px;
+    font-size: 1.15rem;
+    font-weight: 800;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    box-shadow: 
+        0 15px 40px rgba(0, 212, 255, 0.4),
+        0 0 0 1px rgba(255, 255, 255, 0.2);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+}
+
+button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.5), transparent);
+    transition: left 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+button:hover::before {
+    left: 100%;
+}
+
+button:hover {
+    transform: translateY(-5px) scale(1.03);
+    box-shadow: 
+        0 30px 70px rgba(0, 212, 255, 0.6),
+        0 0 60px rgba(57, 255, 20, 0.4);
+}
+
+button:active {
+    transform: translateY(-2px) scale(1.01);
+}
+
+/* LINKS */
+.auth-card a {
+    color: #00d4ff;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.95rem;
+    display: inline-block;
+    margin: 0.5rem 1rem;
+    padding: 0.75rem 1.5rem;
+    border-radius: 12px;
+    border: 1px solid rgba(0, 212, 255, 0.3);
+    backdrop-filter: blur(15px);
+    transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+.auth-card a::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: rgba(57, 255, 20, 0.1);
+    transition: left 0.6s ease;
+}
+
+.auth-card a:hover::before {
+    left: 0;
+}
+
+.auth-card a:hover {
+    color: #39ff14;
+    border-color: rgba(57, 255, 20, 0.5);
+    transform: translateX(-5px);
+    box-shadow: 0 10px 30px rgba(57, 255, 20, 0.3);
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+    .auth-page {
+        padding: 1.5rem;
+    }
+    
+    .auth-card {
+        padding: 3rem 2.5rem;
+        max-width: 90%;
+    }
+    
+    .auth-card h2 {
+        font-size: 2.2rem;
+        margin-bottom: 1.8rem;
+    }
+    
+    input[type="email"],
+    input[type="password"] {
+        padding: 1.2rem 1.5rem;
+    }
+    
+    button {
+        padding: 1.2rem 2.5rem;
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .auth-page {
+        padding: 1rem;
+        align-items: flex-start;
+    }
+    
+    .auth-card {
+        padding: 2.5rem 1.5rem;
+        margin: 1rem 0;
+        border-radius: 20px;
+        max-width: 100%;
+    }
+    
+    .auth-card h2 {
+        font-size: 1.8rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    .error {
+        padding: 0.8rem 1rem;
+        font-size: 0.85rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    form {
+        gap: 1.2rem;
+        margin-bottom: 2rem;
+    }
+    
+    input[type="email"],
+    input[type="password"] {
+        padding: 1rem 1.2rem;
+        font-size: 0.95rem;
+        border-radius: 12px;
+    }
+    
+    button {
+        padding: 1rem 2rem;
+        font-size: 0.95rem;
+        border-radius: 14px;
+    }
+    
+    .auth-card a {
+        font-size: 0.85rem;
+        padding: 0.6rem 1.2rem;
+        margin: 0.4rem 0.8rem;
+        border-radius: 10px;
+    }
+}
+
+@media (max-width: 360px) {
+    .auth-card {
+        padding: 2rem 1.2rem;
+        border-radius: 16px;
+    }
+    
+    .auth-card h2 {
+        font-size: 1.5rem;
+    }
+    
+    input[type="email"],
+    input[type="password"] {
+        padding: 0.9rem 1rem;
+        font-size: 0.9rem;
+    }
+    
+    button {
+        padding: 0.9rem 1.8rem;
+        font-size: 0.9rem;
+    }
+}
+
+/* Touch-friendly improvements */
+@media (hover: none) and (pointer: coarse) {
+    input[type="email"],
+    input[type="password"] {
+        font-size: 16px !important; /* Prevents iOS zoom */
+        min-height: 44px;
+    }
+    
+    button {
+        min-height: 48px;
+    }
+    
+    .auth-card a {
+        min-height: 44px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+}
+
+/* CYBERPUNK SCROLLBAR */
+::-webkit-scrollbar {
+    width: 12px;
+}
+
+::-webkit-scrollbar-track {
+    background: rgba(20, 20, 40, 0.6);
+    border-radius: 6px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: linear-gradient(135deg, #00d4ff, #39ff14);
+    border-radius: 6px;
+    box-shadow: 0 0 20px rgba(0, 212, 255, 0.4);
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(135deg, #ff0080, #ffaa00);
+    box-shadow: 0 0 30px rgba(255, 0, 128, 0.6);
+}

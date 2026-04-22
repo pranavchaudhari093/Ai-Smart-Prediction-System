@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Select Report Date</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/select_report_date.css">
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <div class="card-header">
+                <span class="header-icon">🗓️</span>
+                <div>
+                    <h2>Select Report Date</h2>
+                    <p class="subtitle">Generate insights for any specific date</p>
+                </div>
+            </div>
+
+            <div class="importance-section">
+                <div class="importance-icon">
+                    💡
+                </div>
+                <div class="importance-content">
+                    <h3>Why Reports Matter</h3>
+                    <p>Our AI-powered reports analyze historical data patterns, market trends, and predictive models to deliver actionable insights that help you make informed decisions with confidence.</p>
+                </div>
+            </div>
+
+            <form action="/view_report" method="post" class="report-form">
+                <div class="form-group">
+                    <label for="target-date">
+                        <span>📅</span>
+                        Report Date
+                    </label>
+                    <input type="date" name="date" id="target-date" required>
+                    <span class="focus-border"></span>
+                </div>
+
+                <button type="submit" class="submit-btn">
+                    <span>Generate Report</span>
+                    <span>➜</span>
+                </button>
+            </form>
+        </div>
+    </div>
+
+</body>
+</html>

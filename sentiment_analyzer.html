@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sentiment Analyzer Pro</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Premium Dark Theme Colors */
+            --bg-base: #0f172a;
+            --bg-surface: #1e293b;
+            --bg-surface-hover: #334155;
+            --border-color: #334155;
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            
+            /* Sentiment Colors */
+            --positive-color: #10b981;
+            --positive-bg: rgba(16, 185, 129, 0.1);
+            --negative-color: #ef4444;
+            --negative-bg: rgba(239, 68, 68, 0.1);
+            --neutral-color: #eab308;
+            --neutral-bg: rgba(234, 179, 8, 0.1);
+            --accent-primary: #3b82f6;
+            
+            --radius-lg: 20px;
+            --radius-md: 12px;
+            --radius-sm: 8px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-base);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px 20px;
+            background-image: radial-gradient(circle at 50% 0%, #1e293b 0%, transparent 70%);
+        }
+
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--text-secondary); }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        h1 {
+            font-size: clamp(2rem, 4vw, 3rem);
+            font-weight: 700;
+            letter-spacing: -1px;
+            background: linear-gradient(135deg, #fff, #94a3b8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 12px;
+        }
+
+        .subtitle {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: 1200px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            animation: slideUp 0.6s ease-out forwards;
+        }
+
+        /* --- Panels --- */
+        .panel {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            transition: border-color 0.3s ease;
+        }
+
+        .panel:focus-within {
+            border-color: var(--accent-primary);
+        }
+
+        .panel-header {
+            padding: 16px 24px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(0,0,0,0.1);
+        }
+
+        .panel-title {
+            font-weight: 600;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .panel-stats {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        /* --- Input Area --- */
+        textarea {
+            flex-grow: 1;
+            width: 100%;
+            min-height: 300px;
+            padding: 24px;
+            background: transparent;
+            border: none;
+            color: var(--text-primary);
+            font-size: 1rem;
+            line-height: 1.6;
+            resize: none;
+            outline: none;
+        }
+
+        textarea::placeholder {
+            color: var(--text-secondary);
+            opacity: 0.7;
+        }
+
+        /* --- Controls --- */
+        .controls-bar {
+            padding: 16px 24px;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            gap: 12px;
+            background: rgba(0,0,0,0.1);
+        }
+
+        .btn {
+            padding: 12px 20px;
+            border-radius: var(--radius-sm);
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s;
+            border: 1px solid transparent;
+            font-family: inherit;
+        }
+
+        .btn svg { width: 18px; height: 18px; }
+
+        .btn-primary {
+            background: var(--accent-primary);
+            color: white;
+            flex-grow: 1;
+            justify-content: center;
+        }
+
+        .btn-primary:hover {
+            background: #2563eb;
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background: var(--bg-surface-hover);
+            color: var(--text-primary);
+            border-color: var(--border-color);
+        }
+
+        .btn-secondary:hover {
+            background: #475569;
+        }
+
+        /* --- Output Area --- */
+        .output-area {
+            flex-grow: 1;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            position: relative;
+            overflow-y: auto;
+        }
+
+        .empty-state {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: var(--text-secondary);
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+        }
+
+        /* --- Analysis Results UI --- */
+        .result-card {
+            display: none;
+            padding: 24px;
+            border-radius: var(--radius-md);
+            text-align: center;
+            border: 1px solid transparent;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .result-card.positive { background: var(--positive-bg); border-color: var(--positive-color); }
+        .result-card.negative { background: var(--negative-bg); border-color: var(--negative-color); }
+        .result-card.neutral { background: var(--neutral-bg); border-color: var(--neutral-color); }
+
+        .result-emoji { font-size: 3rem; margin-bottom: 12px; }
+        .result-title { font-size: 1.5rem; font-weight: 700; margin-bottom: 8px; text-transform: uppercase; }
+        .result-desc { color: var(--text-secondary); font-size: 0.95rem; }
+
+        /* Progress Bars */
+        .meter-group { display: none; margin-top: 10px; animation: fadeIn 0.6s ease; }
+        .meter-label { display: flex; justify-content: space-between; margin-bottom: 6px; font-size: 0.9rem; color: var(--text-secondary); font-weight: 500;}
+        .meter-track { width: 100%; height: 8px; background: var(--bg-surface-hover); border-radius: 10px; overflow: hidden; margin-bottom: 16px; }
+        .meter-fill { height: 100%; border-radius: 10px; transition: width 1s cubic-bezier(0.25, 1, 0.5, 1); width: 0%; }
+        
+        /* Keywords Tag Container */
+        .keyword-container { display: none; margin-top: 10px; animation: fadeIn 0.8s ease; }
+        .keyword-title { font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 10px; font-weight: 500; }
+        .tags { display: flex; flex-wrap: wrap; gap: 8px; }
+        .tag { padding: 4px 10px; border-radius: 20px; font-size: 0.8rem; font-weight: 500; background: var(--bg-surface-hover); border: 1px solid var(--border-color); }
+        .tag.pos-tag { color: var(--positive-color); border-color: rgba(16,185,129,0.3); }
+        .tag.neg-tag { color: var(--negative-color); border-color: rgba(239,68,68,0.3); }
+
+        /* Loading Spinner */
+        .loader {
+            display: none;
+            width: 32px;
+            height: 32px;
+            border: 3px solid rgba(59, 130, 246, 0.2);
+            border-radius: 50%;
+            border-top-color: var(--accent-primary);
+            animation: spin 1s linear infinite;
+            margin: auto;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .loading .loader { display: block; }
+        .loading .empty-state, .loading .result-card, .loading .meter-group, .loading .keyword-container { display: none !important; }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes spin { 0% { transform: translate(-50%, -50%) rotate(0deg); } 100% { transform: translate(-50%, -50%) rotate(360deg); } }
+
+        /* Responsive */
+        @media (max-width: 900px) {
+            .app-container { grid-template-columns: 1fr; }
+            textarea { min-height: 200px; }
+            .output-area { min-height: 350px; }
+        }
+        @media (max-width: 480px) {
+            body { padding: 20px 12px; }
+            .controls-bar { flex-direction: column; }
+            .btn { width: 100%; justify-content: center; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>Sentiment Analyzer Pro</h1>
+        <p class="subtitle">AI-powered emotion detection and deep text analysis</p>
+    </div>
+
+    <div class="app-container">
+        <div class="panel">
+            <div class="panel-header">
+                <span class="panel-title">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                    Source Text
+                </span>
+                <span class="panel-stats" id="inputStats">0 words | 0 chars</span>
+            </div>
+            
+            <textarea id="inputText" placeholder="Paste your review, tweet, or message here to analyze its underlying sentiment and emotional tone..."></textarea>
+            
+            <div class="controls-bar">
+                <button class="btn btn-secondary" onclick="clearAll()">Clear</button>
+                <button class="btn btn-primary" onclick="processAnalysis()">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                    Analyze Sentiment
+                </button>
+            </div>
+        </div>
+
+        <div class="panel">
+            <div class="panel-header">
+                <span class="panel-title">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"></path></svg>
+                    Analysis Results
+                </span>
+                <span class="panel-stats" id="statusText">Waiting for input...</span>
+            </div>
+            
+            <div class="output-area" id="outputArea">
+                <div class="empty-state" id="emptyState">
+                    <svg viewBox="0 0 24 24" width="48" height="48" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M8 14s1.5 2 4 2 4-2 4-2"></path><line x1="9" y1="9" x2="9.01" y2="9"></line><line x1="15" y1="9" x2="15.01" y2="9"></line></svg>
+                    <p>Enter text to see sentiment insights</p>
+                </div>
+                
+                <div class="loader"></div>
+
+                <div class="result-card" id="resultCard">
+                    <div class="result-emoji" id="resultEmoji">😐</div>
+                    <div class="result-title" id="resultTitle">Neutral</div>
+                    <div class="result-desc" id="resultDesc">The text appears to be objective or balanced.</div>
+                </div>
+
+                <div class="meter-group" id="meterGroup">
+                    <div class="meter-label"><span>Positivity Index</span> <span id="posScore">0%</span></div>
+                    <div class="meter-track"><div class="meter-fill" id="posFill" style="background: var(--positive-color);"></div></div>
+                    
+                    <div class="meter-label"><span>Negativity Index</span> <span id="negScore">0%</span></div>
+                    <div class="meter-track"><div class="meter-fill" id="negFill" style="background: var(--negative-color);"></div></div>
+                </div>
+
+                <div class="keyword-container" id="keywordContainer">
+                    <div class="keyword-title">Detected Emotion Words</div>
+                    <div class="tags" id="tagsList"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const inputArea = document.getElementById('inputText');
+        const inputStats = document.getElementById('inputStats');
+        const outputArea = document.getElementById('outputArea');
+        
+        // Dictionary
+        const dictionary = {
+            positive: ['good', 'great', 'excellent', 'amazing', 'wonderful', 'fantastic', 'awesome', 'love', 'happy', 'excited', 'perfect', 'best', 'brilliant', 'superb', 'beautiful', 'lovely', 'nice', 'outstanding', 'incredible', 'joy', 'success', 'win', 'victory', 'delight', 'pleasure', 'glad', 'proud'],
+            negative: ['bad', 'terrible', 'awful', 'horrible', 'hate', 'sad', 'angry', 'upset', 'disappointed', 'worst', 'fail', 'failure', 'problem', 'issue', 'broken', 'stupid', 'useless', 'trash', 'garbage', 'annoying', 'frustrating', 'disaster', 'nightmare', 'pain', 'cry', 'mad', 'worst']
+        };
+
+        // Live stats updater
+        inputArea.addEventListener('input', () => {
+            const text = inputArea.value.trim();
+            const words = text ? text.split(/\s+/).length : 0;
+            inputStats.textContent = `${words} words | ${text.length} chars`;
+        });
+
+        function processAnalysis() {
+            const text = inputArea.value.trim().toLowerCase();
+            if (!text) {
+                alert("Please enter some text to analyze.");
+                return;
+            }
+
+            // Trigger loading state
+            outputArea.classList.add('loading');
+            document.getElementById('statusText').textContent = "Analyzing...";
+
+            // Simulate AI delay
+            setTimeout(() => {
+                analyzeSentiment(text);
+                outputArea.classList.remove('loading');
+                document.getElementById('statusText').textContent = "Analysis complete";
+            }, 800);
+        }
+
+        function analyzeSentiment(text) {
+            let posCount = 0;
+            let negCount = 0;
+            let foundPosWords = [];
+            let foundNegWords = [];
+            
+            const words = text.replace(/[.,!?]/g, '').split(/\s+/);
+
+            // Analysis
+            words.forEach(word => {
+                if (dictionary.positive.includes(word)) {
+                    posCount++;
+                    if (!foundPosWords.includes(word)) foundPosWords.push(word);
+                }
+                if (dictionary.negative.includes(word)) {
+                    negCount++;
+                    if (!foundNegWords.includes(word)) foundNegWords.push(word);
+                }
+            });
+
+            // Calculate ratios
+            const totalEmotions = posCount + negCount;
+            let posPercent = 0, negPercent = 0;
+            
+            if (totalEmotions > 0) {
+                posPercent = Math.round((posCount / totalEmotions) * 100);
+                negPercent = Math.round((negCount / totalEmotions) * 100);
+            }
+
+            // Determine primary sentiment
+            let sentiment = 'neutral';
+            if (posCount > negCount) sentiment = 'positive';
+            else if (negCount > posCount) sentiment = 'negative';
+
+            // UI Updates
+            updateResultCard(sentiment, posPercent, negPercent);
+            updateMeters(posPercent, negPercent);
+            updateKeywords(foundPosWords, foundNegWords);
+            
+            // Show elements
+            document.getElementById('emptyState').style.display = 'none';
+            document.getElementById('resultCard').style.display = 'block';
+            document.getElementById('meterGroup').style.display = 'block';
+            
+            if (foundPosWords.length > 0 || foundNegWords.length > 0) {
+                document.getElementById('keywordContainer').style.display = 'block';
+            } else {
+                document.getElementById('keywordContainer').style.display = 'none';
+            }
+        }
+
+        function updateResultCard(sentiment, posPct, negPct) {
+            const card = document.getElementById('resultCard');
+            const emoji = document.getElementById('resultEmoji');
+            const title = document.getElementById('resultTitle');
+            const desc = document.getElementById('resultDesc');
+
+            card.className = `result-card ${sentiment}`;
+            
+            if (sentiment === 'positive') {
+                emoji.textContent = '✨😊';
+                title.textContent = 'Positive';
+                title.style.color = 'var(--positive-color)';
+                desc.textContent = `Strong positive sentiment detected (${posPct}% dominance).`;
+            } else if (sentiment === 'negative') {
+                emoji.textContent = '⚠️📉';
+                title.textContent = 'Negative';
+                title.style.color = 'var(--negative-color)';
+                desc.textContent = `Text contains mostly negative undertones (${negPct}% dominance).`;
+            } else {
+                emoji.textContent = '⚖️😐';
+                title.textContent = 'Neutral';
+                title.style.color = 'var(--neutral-color)';
+                desc.textContent = 'The text appears balanced, factual, or lacks strong emotional keywords.';
+            }
+        }
+
+        function updateMeters(posPct, negPct) {
+            // If completely neutral (no words found), show a tiny baseline
+            if (posPct === 0 && negPct === 0) {
+                posPct = 10; negPct = 10; 
+            }
+            
+            document.getElementById('posScore').textContent = `${posPct}%`;
+            document.getElementById('negScore').textContent = `${negPct}%`;
+            
+            // Timeout allows CSS transition to trigger from 0 width
+            setTimeout(() => {
+                document.getElementById('posFill').style.width = `${posPct}%`;
+                document.getElementById('negFill').style.width = `${negPct}%`;
+            }, 50);
+        }
+
+        function updateKeywords(posWords, negWords) {
+            const tagsList = document.getElementById('tagsList');
+            tagsList.innerHTML = '';
+
+            posWords.forEach(word => {
+                const span = document.createElement('span');
+                span.className = 'tag pos-tag';
+                span.textContent = `+ ${word}`;
+                tagsList.appendChild(span);
+            });
+
+            negWords.forEach(word => {
+                const span = document.createElement('span');
+                span.className = 'tag neg-tag';
+                span.textContent = `- ${word}`;
+                tagsList.appendChild(span);
+            });
+        }
+
+        function clearAll() {
+            inputArea.value = '';
+            inputStats.textContent = '0 words | 0 chars';
+            document.getElementById('statusText').textContent = 'Waiting for input...';
+            
+            // Reset UI
+            document.getElementById('emptyState').style.display = 'flex';
+            document.getElementById('resultCard').style.display = 'none';
+            document.getElementById('meterGroup').style.display = 'none';
+            document.getElementById('keywordContainer').style.display = 'none';
+            
+            // Reset meters
+            document.getElementById('posFill').style.width = '0%';
+            document.getElementById('negFill').style.width = '0%';
+            
+            inputArea.focus();
+        }
+    </script>
+</body>
+</html>

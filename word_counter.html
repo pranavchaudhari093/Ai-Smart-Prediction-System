@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Word Counter</title>
+    <style>
+        :root {
+            /* Premium Dark Theme Palette */
+            --bg-color: #090c10;
+            --container-bg: #161b22;
+            --card-bg: #21262d;
+            --border-color: #30363d;
+            --text-main: #c9d1d9;
+            --text-muted: #8b949e;
+            --accent-color: #58a6ff;
+            --accent-glow: rgba(88, 166, 255, 0.4);
+            --card-glow: rgba(88, 166, 255, 0.15);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            min-height: 100vh;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            line-height: 1.5;
+        }
+
+        /* --- Entrance Animation --- */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .container {
+            background-color: var(--container-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: clamp(20px, 5vw, 40px);
+            max-width: 900px;
+            width: 100%;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            animation: fadeInUp 0.6s ease-out forwards;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: clamp(16px, 4vw, 28px);
+        }
+
+        h1 {
+            font-size: clamp(1.5rem, 5vw, 2.25rem);
+            font-weight: 600;
+            color: #ffffff;
+            margin-bottom: 8px;
+            letter-spacing: -0.5px;
+        }
+
+        .subtitle {
+            color: var(--text-muted);
+            font-size: clamp(0.9rem, 2vw, 1.05rem);
+        }
+
+        /* --- Textarea with Glow Effect --- */
+        textarea {
+            width: 100%;
+            height: clamp(150px, 30vh, 250px);
+            padding: 20px;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            font-size: clamp(14px, 2vw, 16px);
+            font-family: inherit;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            resize: vertical;
+            outline: none;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            line-height: 1.6;
+        }
+
+        textarea:focus {
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 1px var(--accent-color), 0 0 15px var(--accent-glow);
+            background-color: #0d1117;
+        }
+
+        textarea::placeholder {
+            color: var(--text-muted);
+            opacity: 0.7;
+        }
+
+        /* --- Stats Grid --- */
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: clamp(12px, 2vw, 20px);
+            margin-top: clamp(20px, 4vw, 28px);
+        }
+
+        /* --- Stat Cards with Hover Glow --- */
+        .stat-card {
+            background-color: var(--card-bg);
+            padding: 20px 16px;
+            border-radius: 12px;
+            text-align: center;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--accent-color);
+            box-shadow: 0 8px 20px var(--card-glow);
+        }
+
+        .stat-number {
+            font-size: clamp(1.5rem, 4vw, 1.85rem);
+            font-weight: 700;
+            color: var(--accent-color);
+            display: block;
+            margin-bottom: 6px;
+            transition: color 0.3s ease;
+        }
+
+        .stat-card:hover .stat-number {
+            text-shadow: 0 0 10px var(--accent-glow);
+        }
+
+        .stat-label {
+            font-size: clamp(0.75rem, 1.5vw, 0.85rem);
+            color: var(--text-muted);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        /* --- Advanced Mobile Responsiveness --- */
+        @media (max-width: 600px) {
+            body {
+                padding: 12px;
+            }
+            .stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .stat-card {
+                padding: 16px 12px;
+            }
+        }
+
+        @media (max-width: 380px) {
+            .stats {
+                grid-template-columns: 1fr; /* Stacks nicely on super small phones */
+            }
+            .stat-card {
+                padding: 12px;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                text-align: left;
+            }
+            .stat-number {
+                margin-bottom: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Advanced Word Counter</h1>
+            <p class="subtitle">Real-time analysis with a sleek, responsive design</p>
+        </div>
+        
+        <textarea id="text" placeholder="Start typing or paste your text here..."></textarea>
+        
+        <div class="stats" id="stats">
+            </div>
+    </div>
+
+    <script>
+        const textarea = document.getElementById('text');
+        const statsContainer = document.getElementById('stats');
+
+        const statsData = [
+            { id: 'words', label: 'Words', icon: '📝' },
+            { id: 'chars', label: 'Characters', icon: '🔤' },
+            { id: 'charsNoSpace', label: 'No Spaces', icon: '✂️' },
+            { id: 'sentences', label: 'Sentences', icon: '📏' },
+            { id: 'paragraphs', label: 'Paragraphs', icon: '📑' },
+            { id: 'readingTime', label: 'Read Time', icon: '⏱️' }
+        ];
+
+        // Create stat cards dynamically
+        statsData.forEach(stat => {
+            const card = document.createElement('div');
+            card.className = 'stat-card';
+            card.innerHTML = `
+                <span class="stat-number" id="${stat.id}">0</span>
+                <span class="stat-label">
+                    <span>${stat.icon}</span> 
+                    <span>${stat.label}</span>
+                </span>
+            `;
+            statsContainer.appendChild(card);
+        });
+
+        function updateStats() {
+            const text = textarea.value;
+            const normalizedText = text.trim();
+            
+            // Words
+            const wordsArray = normalizedText ? normalizedText.split(/\s+/) : [];
+            const words = wordsArray.length;
+            document.getElementById('words').textContent = words;
+            
+            // Characters
+            const chars = text.length;
+            document.getElementById('chars').textContent = chars;
+            
+            // Characters without spaces
+            const charsNoSpace = text.replace(/\s/g, '').length;
+            document.getElementById('charsNoSpace').textContent = charsNoSpace;
+            
+            // Sentences
+            const sentencesArray = normalizedText ? normalizedText.split(/[.!?]+/).filter(s => s.trim().length > 0) : [];
+            const sentences = sentencesArray.length;
+            document.getElementById('sentences').textContent = sentences;
+            
+            // Paragraphs
+            const paragraphsArray = normalizedText ? normalizedText.split(/\n+/).filter(p => p.trim().length > 0) : [];
+            const paragraphs = paragraphsArray.length;
+            document.getElementById('paragraphs').textContent = paragraphs;
+            
+            // Reading time
+            const wordsPerMinute = 200;
+            const minutes = Math.floor(words / wordsPerMinute);
+            const seconds = Math.floor((words % wordsPerMinute) / (wordsPerMinute / 60));
+            
+            let timeString = '0s';
+            if (minutes > 0 && seconds > 0) {
+                timeString = `${minutes}m ${seconds}s`;
+            } else if (minutes > 0) {
+                timeString = `${minutes}m`;
+            } else if (seconds > 0) {
+                timeString = `${seconds}s`;
+            }
+            
+            document.getElementById('readingTime').textContent = timeString;
+        }
+
+        // Event listener for real-time updates
+        textarea.addEventListener('input', updateStats);
+        
+        // Initial setup
+        updateStats();
+    </script>
+</body>
+</html>

@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Fake News Detection</title>
+    <link rel="stylesheet" href="/static/fake.css">
+</head>
+<body class="page-fake">
+
+<div class="fake-card">
+    <h2>📰 Fake News <span>Detection</span></h2>
+
+    <form method="POST" action="/fake_predict">
+        <textarea name="news" placeholder="Paste news article here..." required></textarea>
+
+        <!-- BUTTON GROUP -->
+        <div class="btn-group">
+            <button type="submit">Analyze News</button>
+
+            <button type="button" class="reset-btn"
+                onclick="window.location.href='/fake'">
+                Reset
+            </button>
+        </div>
+    </form>
+
+    {% if result %}
+    <div class="result">
+        <h3>{{ result }}</h3>
+        <p class="confidence-main">Confidence: <strong>{{ confidence }}%</strong></p>
+        
+        <div class="probability-breakdown">
+            <div class="prob-bar">
+                <div class="prob-real" style="width: {{ real_probability }}%;"></div>
+            </div>
+            <div class="prob-labels">
+                <span class="real-label">🟢 Real: {{ real_probability }}%</span>
+                <span class="fake-label">🔴 Fake: {{ fake_probability }}%</span>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <a href="/" class="back">← Back to Home</a>
+</div>
+
+</body>
+</html>
