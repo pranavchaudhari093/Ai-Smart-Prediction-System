@@ -1161,5 +1161,8 @@ def analytics():
 
     return render_template("analytics.html", model_data=model_data)
 # ================= RUN =================
+import os
+
 if __name__ == "__main__":
-    app.run(debug=True)
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=port)
