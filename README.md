@@ -617,10 +617,9 @@ This project is licensed under the **MIT License**. See the LICENSE file for det
 ## 📞 Contact
 
 ### Project Maintainer
-- **Name**: [Your Name]
-- **Email**: [your.email@example.com]
-- **LinkedIn**: [linkedin.com/in/yourprofile]
-- **GitHub**: [github.com/yourusername]
+- **Name**: [Pranav Chaudhari]
+- **Email**: [pranavc271115@gmail.com]
+- **LinkedIn**: [www.linkedin.com/in/pranav-chaudhari-317410290]
 
 ### Acknowledgments
 - Machine learning models trained on publicly available datasets
