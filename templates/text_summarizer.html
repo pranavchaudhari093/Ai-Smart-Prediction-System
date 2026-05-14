@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Text Summarizer Pro</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-base: #0b0f19;
+            --bg-surface: #151b2b;
+            --bg-surface-hover: #1e2638;
+            --border-color: #2a3241;
+            --accent-primary: #6366f1;
+            --accent-primary-hover: #4f46e5;
+            --accent-secondary: #10b981;
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --radius-lg: 16px;
+            --radius-md: 12px;
+            --radius-sm: 8px;
+            --shadow-glow: 0 0 20px rgba(99, 102, 241, 0.15);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-base);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px 20px;
+            background-image: 
+                radial-gradient(circle at 15% 50%, rgba(99, 102, 241, 0.08), transparent 25%),
+                radial-gradient(circle at 85% 30%, rgba(16, 185, 129, 0.05), transparent 25%);
+        }
+
+        /* --- Custom Scrollbar --- */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--text-secondary); }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        h1 {
+            font-size: clamp(2rem, 4vw, 3rem);
+            font-weight: 700;
+            letter-spacing: -1px;
+            background: linear-gradient(135deg, #fff, #a5b4fc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 12px;
+        }
+
+        .subtitle {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            font-weight: 400;
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: 1200px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            animation: slideUp 0.6s ease-out forwards;
+        }
+
+        /* --- Panels --- */
+        .panel {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            transition: border-color 0.3s ease;
+        }
+
+        .panel:focus-within {
+            border-color: rgba(99, 102, 241, 0.5);
+            box-shadow: var(--shadow-glow);
+        }
+
+        .panel-header {
+            padding: 16px 24px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(255,255,255,0.02);
+        }
+
+        .panel-title {
+            font-weight: 600;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-primary);
+        }
+
+        .panel-stats {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        /* --- Textareas --- */
+        textarea {
+            flex-grow: 1;
+            width: 100%;
+            min-height: 350px;
+            padding: 24px;
+            background: transparent;
+            border: none;
+            color: var(--text-primary);
+            font-size: 1rem;
+            line-height: 1.6;
+            resize: none;
+            outline: none;
+        }
+
+        textarea::placeholder {
+            color: var(--text-secondary);
+            opacity: 0.5;
+        }
+
+        .output-area {
+            flex-grow: 1;
+            padding: 24px;
+            font-size: 1rem;
+            line-height: 1.6;
+            color: var(--text-primary);
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .empty-state {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: var(--text-secondary);
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            opacity: 0.6;
+        }
+
+        /* --- Controls & Buttons --- */
+        .controls-bar {
+            padding: 16px 24px;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            background: rgba(0,0,0,0.2);
+        }
+
+        .btn {
+            padding: 10px 18px;
+            border-radius: var(--radius-sm);
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s;
+            border: 1px solid transparent;
+            font-family: inherit;
+        }
+
+        .btn svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        .btn-primary {
+            background: var(--accent-primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--accent-primary-hover);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+        }
+
+        .btn-secondary {
+            background: var(--bg-surface-hover);
+            color: var(--text-primary);
+            border-color: var(--border-color);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255,255,255,0.1);
+            border-color: rgba(255,255,255,0.2);
+        }
+
+        .btn-icon {
+            padding: 10px;
+            background: transparent;
+            color: var(--text-secondary);
+            border: 1px solid transparent;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-icon:hover {
+            background: var(--bg-surface-hover);
+            color: var(--text-primary);
+        }
+
+        /* --- Loading Animation --- */
+        .loader {
+            display: none;
+            width: 24px;
+            height: 24px;
+            border: 3px solid rgba(99, 102, 241, 0.3);
+            border-radius: 50%;
+            border-top-color: var(--accent-primary);
+            animation: spin 1s ease-in-out infinite;
+            margin: 0 auto;
+        }
+
+        .loading .loader { display: block; }
+        .loading .output-text { display: none; }
+        .loading .empty-state { display: none; }
+
+        /* --- Toast Notification --- */
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            background: var(--accent-secondary);
+            color: #fff;
+            padding: 12px 24px;
+            border-radius: var(--radius-md);
+            font-weight: 500;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            z-index: 1000;
+        }
+
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        /* --- Animations --- */
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes slideUp { 
+            from { opacity: 0; transform: translateY(20px); } 
+            to { opacity: 1; transform: translateY(0); } 
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* --- Mobile Responsive --- */
+        @media (max-width: 900px) {
+            .app-container {
+                grid-template-columns: 1fr;
+            }
+            textarea {
+                min-height: 200px;
+            }
+            .output-area {
+                min-height: 200px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body { padding: 20px 12px; }
+            h1 { font-size: 1.75rem; }
+            .controls-bar { flex-direction: column; }
+            .btn { justify-content: center; width: 100%; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>Text Summarizer Pro</h1>
+        <p class="subtitle">AI-powered summarization with intelligent extraction</p>
+    </div>
+
+    <div class="app-container">
+        <div class="panel">
+            <div class="panel-header">
+                <span class="panel-title">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                    Original Text
+                </span>
+                <span class="panel-stats" id="inputStats">0 words | 0 chars</span>
+            </div>
+            
+            <textarea id="inputText" placeholder="Paste your long article, document, or essay here..."></textarea>
+            
+            <div class="controls-bar">
+                <button class="btn btn-primary" onclick="processSummary('smart')">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M12 16v-4"></path><path d="M12 8h.01"></path></svg>
+                    Smart Summary
+                </button>
+                <button class="btn btn-secondary" onclick="processSummary('short')">Short</button>
+                <button class="btn btn-secondary" onclick="processSummary('detailed')">Detailed</button>
+                <div style="flex-grow: 1;"></div>
+                <button class="btn btn-secondary" onclick="clearAll()">Clear</button>
+            </div>
+        </div>
+
+        <div class="panel">
+            <div class="panel-header">
+                <span class="panel-title">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                    Result
+                </span>
+                <span class="panel-stats" id="outputStats" style="color: var(--accent-secondary);">Waiting...</span>
+            </div>
+            
+            <div class="output-area" id="outputContainer">
+                <div class="empty-state" id="emptyState">
+                    <svg viewBox="0 0 24 24" width="48" height="48" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+                    <p>Your summary will appear here.</p>
+                </div>
+                <div class="loader"></div>
+                <div class="output-text" id="outputText" style="display: none;"></div>
+            </div>
+
+            <div class="controls-bar" style="justify-content: flex-end;">
+                <button class="btn-icon" onclick="copyText()" title="Copy to Clipboard">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                </button>
+                <button class="btn-icon" onclick="downloadText()" title="Download as TXT">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast" id="toast">Action successful!</div>
+
+    <script>
+        const inputArea = document.getElementById('inputText');
+        const outputText = document.getElementById('outputText');
+        const outputContainer = document.getElementById('outputContainer');
+        const emptyState = document.getElementById('emptyState');
+        const inputStats = document.getElementById('inputStats');
+        const outputStats = document.getElementById('outputStats');
+
+        // Live stats updater
+        inputArea.addEventListener('input', () => {
+            const text = inputArea.value;
+            const words = text.trim() ? text.trim().split(/\s+/).length : 0;
+            inputStats.textContent = `${words} words | ${text.length} chars`;
+        });
+
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 3000);
+        }
+
+        // Simulating AI processing delay for UX
+        function processSummary(mode) {
+            const text = inputArea.value.trim();
+            if (!text) {
+                showToast("Please enter some text to summarize!");
+                return;
+            }
+
+            // Show loading state
+            outputContainer.classList.add('loading');
+            outputStats.textContent = "Processing...";
+            outputStats.style.color = "var(--text-secondary)";
+
+            // Mock network delay (800ms)
+            setTimeout(() => {
+                generateSummary(text, mode);
+            }, 800);
+        }
+
+        function generateSummary(text, mode) {
+            outputContainer.classList.remove('loading');
+            outputText.style.display = "block";
+            
+            const sentences = text.split(/(?<=[.!?])\s+/).filter(s => s.trim().length > 0);
+            const originalWords = text.trim().split(/\s+/).length;
+            let summary = '';
+
+            // Advanced Mock Logic
+            if (sentences.length <= 2) {
+                summary = text; // Too short to summarize
+            } else if (mode === 'short') {
+                summary = sentences[0]; // Just the first sentence
+            } else if (mode === 'detailed') {
+                // Take ~50% of the sentences
+                const count = Math.ceil(sentences.length * 0.5);
+                summary = sentences.slice(0, count).join(' ');
+            } else {
+                // Smart mode: Extract sentences with keywords, or fallback to first, middle, last
+                const keywords = ['important', 'key', 'main', 'crucial', 'result', 'therefore', 'conclude'];
+                const smartSentences = sentences.filter((s, i) => {
+                    const hasKeyword = keywords.some(k => s.toLowerCase().includes(k));
+                    return i === 0 || i === sentences.length - 1 || hasKeyword;
+                });
+                
+                // Limit to max 4 sentences to keep it concise
+                summary = smartSentences.slice(0, 4).join(' ');
+                
+                // Fallback if filtering resulted in nothing
+                if(!summary) summary = sentences.slice(0, 2).join(' ');
+            }
+
+            outputText.textContent = summary;
+            
+            // Calculate output stats & compression rate
+            const newWords = summary.trim().split(/\s+/).length;
+            const reduction = Math.round(((originalWords - newWords) / originalWords) * 100);
+            
+            outputStats.textContent = `Reduced by ${reduction}% | ${newWords} words`;
+            outputStats.style.color = "var(--accent-secondary)";
+        }
+
+        function clearAll() {
+            inputArea.value = '';
+            outputText.textContent = '';
+            outputText.style.display = "none";
+            emptyState.style.display = "flex";
+            inputStats.textContent = "0 words | 0 chars";
+            outputStats.textContent = "Waiting...";
+            outputStats.style.color = "var(--text-secondary)";
+            inputArea.focus();
+        }
+
+        function copyText() {
+            const textToCopy = outputText.textContent;
+            if (!textToCopy || outputText.style.display === "none") {
+                showToast("Nothing to copy!");
+                return;
+            }
+            navigator.clipboard.writeText(textToCopy).then(() => {
+                showToast("Summary copied to clipboard!");
+            });
+        }
+
+        function downloadText() {
+            const textToSave = outputText.textContent;
+            if (!textToSave || outputText.style.display === "none") {
+                showToast("Nothing to download!");
+                return;
+            }
+            const blob = new Blob([textToSave], { type: "text/plain" });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = "Summary.txt";
+            a.click();
+            URL.revokeObjectURL(url);
+            showToast("Download started!");
+        }
+    </script>
+</body>
+</html>

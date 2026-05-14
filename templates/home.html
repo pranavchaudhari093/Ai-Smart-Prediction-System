@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>AI Smart Prediction System</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/home.css">
+</head>
+<body class="page-home">
+
+<div class="glow-bg">
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+</div>
+
+<header class="navbar">
+    <div class="container nav-content">
+        <div class="header-brand">
+            <div class="brand-logo">
+                <span class="logo-icon">💻</span>
+            </div>
+            <div class="brand-text">
+                <h1>AI Smart <span>Prediction</span></h1>
+            </div>
+        </div>
+
+        <nav class="header-actions">
+            {% if user %}
+            <button id="navbar-chatbot-btn" class="navbar-chatbot-btn" title="Open AI Assistant">
+                💬 Chat
+            </button>
+            {% endif %}
+            {% if user %}
+                <a href="/user_dashboard" class="profile-pill">
+                    <span class="user-name">{{ user.name }}</span>
+                    <div class="avatar">
+                        👤
+                    </div>
+                </a>
+            {% else %}
+                <a href="/login" class="login-button">
+                    <span>Sign In</span>
+                    <span>➜</span>
+                </a>
+            {% endif %}
+        </nav>
+    </div>
+</header>
+
+<main class="hero-container">
+    <section class="hero-intro">
+        <span class="badge">Next-Gen Intelligence</span>
+        <h2>Predict the Future with <br><span class="gradient-text">Precision Analytics</span></h2>
+        <p>Deploy advanced machine learning models in seconds. Choose a module below to begin your analysis.</p>
+    </section>
+
+    <div class="card-grid">
+        <a href="/student" class="glass-card">
+            <div class="card-glow"></div>
+            <div class="icon-wrapper">🎓</div>
+            <h3>Student Performance</h3>
+            <p>Analyze academic trends and predict final grades with high-confidence ML.</p>
+            <div class="card-action">
+                <span>Deploy Model</span>
+                <span>›</span>
+            </div>
+        </a>
+
+        <a href="/house" class="glass-card">
+            <div class="card-glow"></div>
+            <div class="icon-wrapper">🏠</div>
+            <h3>Real Estate Value</h3>
+            <p>Market-driven price estimation based on historical property data sets.</p>
+            <div class="card-action">
+                <span>Deploy Model</span>
+                <span>›</span>
+            </div>
+        </a>
+
+        <a href="/heart" class="glass-card">
+            <div class="card-glow"></div>
+            <div class="icon-wrapper">💓</div>
+            <h3>Health Diagnostic</h3>
+            <p>Identify cardiovascular risk factors using clinical health indicators.</p>
+            <div class="card-action">
+                <span>Deploy Model</span>
+                <span>›</span>
+            </div>
+        </a>
+
+        <a href="/spam" class="glass-card">
+            <div class="card-glow"></div>
+            <div class="icon-wrapper">⚠️</div>
+            <h3>Spam Detection</h3>
+            <p>Filter fraudulent content using advanced NLP text classification.</p>
+            <div class="card-action">
+                <span>Deploy Model</span>
+                <span>›</span>
+            </div>
+        </a>
+
+        <a href="/fake" class="glass-card">
+            <div class="card-glow"></div>
+            <div class="icon-wrapper">📰</div>
+            <h3>News Authenticity</h3>
+            <p>Verify information integrity with our neural news verification engine.</p>
+            <div class="card-action">
+                <span>Deploy Model</span>
+                <span>›</span>
+            </div>
+        </a>
+
+        <a href="/loan" class="glass-card">
+            <div class="card-glow"></div>
+            <div class="icon-wrapper">🏦</div>
+            <h3>Loan Approval</h3>
+            <p>Predict creditworthiness using deep financial history analytics.</p>
+            <div class="card-action">
+                <span>Deploy Model</span>
+                <span>›</span>
+            </div>
+        </a>
+    </div>
+   <div class="action-cards-section">
+    <div class="action-cards-header">
+        <h2>Dashboard Actions</h2>
+        <p>Choose an option below to view your insights or create a new summary.</p>
+    </div>
+    <div class="action-cards-container">
+        <a href="/analytics" class="action-card analytics-hero-btn">
+            <div class="card-content">
+                <div class="card-title">
+                    <span>📊</span>
+                    <span> View My Analytics Dashboard</span>
+                </div>
+                <p class="card-description">Dive deep into your metrics and track your performance.</p>
+            </div>
+        </a>
+
+        <a href="/select_report_date" class="action-card report-btn">
+            <div class="card-content">
+                <div class="card-title">
+                    <span>✨</span>
+                    <span> Generate AI Report</span>
+                </div>
+                <p class="card-description">Create comprehensive, AI-driven insights for specific dates.</p>
+            </div>
+        </a>
+    </div>
+</div>
+<div class="quick-tools-section">
+    <div class="section-header">
+        <h2>⚡ Quick Tools</h2>
+        <p>Access AI-powered utilities instantly</p>
+    </div>
+    <div class="quick-tools-grid">
+        <a href="/summarizer" class="quick-tool-card summarizer">
+            <div class="tool-icon">📝</div>
+            <h3>Text Summarizer</h3>
+            <p>Condense long texts instantly</p>
+            <span class="tool-badge">NLP</span>
+        </a>
+        <a href="/word_counter" class="quick-tool-card counter">
+            <div class="tool-icon">📊</div>
+            <h3>Word Counter</h3>
+            <p>Analyze text statistics</p>
+            <span class="tool-badge">Analytics</span>
+        </a>
+        <a href="/password" class="quick-tool-card checker">
+            <div class="tool-icon">🔐</div>
+            <h3>Password Checker</h3>
+            <p>Check password strength</p>
+            <span class="tool-badge">Security</span>
+        </a>
+        <a href="/sentiment" class="quick-tool-card sentiment">
+            <div class="tool-icon">💭</div>
+            <h3>Sentiment Analyzer</h3>
+            <p>Analyze text emotions</p>
+            <span class="tool-badge">AI</span>
+        </a>
+        <a href="/name_generator" class="quick-tool-card generator">
+            <div class="tool-icon">✨</div>
+            <h3>Name Generator</h3>
+            <p>Generate creative names</p>
+            <span class="tool-badge">Creative</span>
+        </a>
+        <a href="/idea" class="quick-tool-card ideas">
+            <div class="tool-icon">💡</div>
+            <h3>Idea Generator</h3>
+            <p>Brainstorm new ideas</p>
+            <span class="tool-badge">Innovation</span>
+        </a>
+    </div>
+</div>
+</main>
+
+
+{% if user %}
+<!-- CHAT BOT PROGRAM --> 
+
+<!-- Chatbot Toggle Button -->
+    <div id="chatbot-toggle" title="AI Assistant">
+        💬
+        <span class="chat-badge" style="display: none;">0</span>
+    </div>
+
+    <!-- Chatbot Container -->
+    <div id="chatbot-container">
+        <!-- Header -->
+        <div class="chat-header">
+            <div class="header-left">
+                <div class="bot-avatar">
+                    🤖
+                </div>
+                <h3>AI Assistant</h3>
+                <span class="status-indicator"></span>
+            </div>
+            <button id="close-chat" title="Close">
+                ✕
+            </button>
+        </div>
+
+        <!-- Messages -->
+        <div id="chat-messages">
+            <div class="welcome-message">
+                <div class="message-avatar">🤖</div>
+                <div class="message-content">
+                    <p><strong>Hello! 👋</strong> I'm your AI Smart Prediction assistant.</p>
+                    <p style="margin-top: 10px;">I can help with:</p>
+                    <div class="quick-actions">
+                        <button onclick="quickAction('What models are available?')">
+                            📊 Available Models
+                        </button>
+                        <button onclick="quickAction('student model')">
+                            🎓 Student Prediction
+                        </button>
+                        <button onclick="quickAction('house price')">
+                            🏠 House Prices
+                        </button>
+                        <button onclick="quickAction('loan approval')">
+                            💳 Loan Approval
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Input -->
+        <div class="chat-input-container">
+            <div class="input-wrapper">
+                <input type="text" id="userInput" placeholder="Ask me anything about predictions..." maxlength="500">
+                <button id="sendBtn" onclick="sendMessage()" disabled>
+                    ✈️
+                </button>
+            </div>
+            <div class="input-hint">
+                <small>↵ Enter to send • ESC to close • "clear" to reset</small>
+            </div>
+        </div>
+    </div>
+{% else %}
+<!-- Login Prompt for Chatbot -->
+<div id="chatbot-login-prompt" style="
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 15px 20px;
+    border-radius: 50px;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+    z-index: 10000;
+    transition: all 0.3s ease;
+    text-align: center;
+    max-width: 200px;
+" onclick="location.href='/login'" title="Login to use chatbot">
+    💬 Sign In for Chat
+</div>
+{% endif %}
+
+<footer class="minimal-footer">
+    <p>© 2026 AI Smart Prediction System. Crafted for Performance.</p>
+</footer>
+
+<script>
+// Clear browser cache and ensure fresh page load
+document.addEventListener('DOMContentLoaded', function() {
+    // Prevent back button caching
+    if (performance.navigation.type === 2) {
+        window.location.href = '/';
+    }
+});
+
+// Refresh user session state on page load
+const isUserLoggedIn = {{ 'true' if user else 'false' }};
+if (!isUserLoggedIn) {
+    const profilePill = document.querySelector('.profile-pill');
+    const loginButton = document.querySelector('.login-button');
+    if (profilePill) profilePill.style.display = 'none';
+    if (loginButton) loginButton.style.display = 'flex';
+}
+</script>
+
+{% if user %}
+<script src="{{ url_for('static', filename='js/chatbot.js') }}"></script>
+{% endif %}
+</body>
+</html>

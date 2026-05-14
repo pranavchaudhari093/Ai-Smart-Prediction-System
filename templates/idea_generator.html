@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Idea Generator Pro</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Premium Dark Theme */
+            --bg-base: #09090b;
+            --bg-card: #18181b;
+            --bg-hover: #27272a;
+            --border-color: #3f3f46;
+            
+            --accent-primary: #3b82f6;
+            --accent-secondary: #8b5cf6;
+            --accent-glow: rgba(59, 130, 246, 0.25);
+            
+            --text-main: #f8fafc;
+            --text-muted: #a1a1aa;
+            
+            --radius-lg: 24px;
+            --radius-md: 12px;
+            --radius-sm: 8px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-base);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(circle at 15% 0%, rgba(59, 130, 246, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 85% 100%, rgba(139, 92, 246, 0.15) 0%, transparent 50%);
+        }
+
+        .container {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 48px;
+            width: 100%;
+            max-width: 800px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255,255,255,0.05);
+            animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
+            z-index: 10;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(40px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* --- Header --- */
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        h1 {
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-weight: 900;
+            letter-spacing: -0.04em;
+            background: linear-gradient(135deg, #fff 30%, #a1a1aa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 12px;
+        }
+
+        .subtitle {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            max-width: 500px;
+            margin: 0 auto;
+            line-height: 1.5;
+        }
+
+        /* --- Categories (Mobile Friendly Horizontal Scroll) --- */
+        .categories {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 32px;
+            overflow-x: auto;
+            padding-bottom: 8px;
+            scroll-behavior: smooth;
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        
+        .categories::-webkit-scrollbar { display: none; }
+
+        .tab {
+            padding: 10px 20px;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid var(--border-color);
+            border-radius: 100px;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .tab:hover {
+            border-color: var(--text-main);
+            color: var(--text-main);
+            background: rgba(255,255,255,0.08);
+        }
+
+        .tab.active {
+            background: var(--text-main);
+            color: var(--bg-base);
+            border-color: var(--text-main);
+            font-weight: 600;
+        }
+
+        /* --- Idea Display Area --- */
+        .idea-display {
+            background: rgba(0,0,0,0.3);
+            border-radius: var(--radius-md);
+            padding: 40px 32px;
+            margin-bottom: 32px;
+            min-height: 220px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            border: 1px dashed var(--border-color);
+            position: relative;
+        }
+
+        #result {
+            font-size: clamp(1.5rem, 4vw, 2.25rem);
+            font-weight: 700;
+            line-height: 1.4;
+            letter-spacing: -0.02em;
+            background: linear-gradient(135deg, #60a5fa, #c084fc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            transition: opacity 0.4s ease, transform 0.4s ease;
+        }
+
+        #result.loading {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+
+        /* --- Controls --- */
+        .primary-action {
+            width: 100%;
+            margin-bottom: 20px;
+        }
+
+        .btn-generate {
+            width: 100%;
+            padding: 20px;
+            border-radius: var(--radius-md);
+            border: none;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            color: white;
+            box-shadow: 0 10px 25px var(--accent-glow);
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            font-family: inherit;
+        }
+
+        .btn-generate:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 35px var(--accent-glow);
+            filter: brightness(1.1);
+        }
+
+        .btn-generate:active { transform: translateY(0); }
+
+        .secondary-actions {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-bottom: 32px;
+        }
+
+        .btn-sec {
+            padding: 14px;
+            border-radius: var(--radius-md);
+            background: transparent;
+            color: var(--text-main);
+            border: 1px solid var(--border-color);
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-sec:hover {
+            background: var(--bg-hover);
+            border-color: #52525b;
+        }
+
+        .btn-sec svg { width: 18px; height: 18px; opacity: 0.8; }
+
+        /* --- Saved Ideas Section --- */
+        .saved-section {
+            border-top: 1px solid var(--border-color);
+            padding-top: 24px;
+        }
+
+        .saved-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .saved-header h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-muted);
+        }
+
+        .badge {
+            font-size: 0.8rem;
+            background: var(--bg-hover);
+            padding: 4px 10px;
+            border-radius: 100px;
+            color: var(--text-muted);
+        }
+
+        .saved-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 12px;
+        }
+
+        .saved-card {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid var(--border-color);
+            padding: 16px;
+            border-radius: var(--radius-md);
+            font-size: 0.95rem;
+            line-height: 1.4;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .saved-card p { flex-grow: 1; }
+
+        .saved-card-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .icon-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            padding: 6px;
+            border-radius: 6px;
+            transition: 0.2s;
+        }
+
+        .icon-btn:hover {
+            background: var(--bg-hover);
+            color: var(--text-main);
+        }
+
+        .empty-state {
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            padding: 20px;
+            border: 1px dashed var(--border-color);
+            border-radius: var(--radius-md);
+        }
+
+        /* --- Toast Notification --- */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: #18181b;
+            border: 1px solid #3f3f46;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 100px;
+            font-weight: 500;
+            font-size: 0.95rem;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+            opacity: 0;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+
+        @keyframes fadeIn { from { opacity: 0; transform: scale(0.98); } to { opacity: 1; transform: scale(1); } }
+
+        /* --- Mobile Responsive --- */
+        @media (max-width: 650px) {
+            .container { padding: 32px 20px; border-radius: 20px; }
+            h1 { font-size: 2.2rem; }
+            .idea-display { padding: 30px 20px; min-height: 180px; }
+            .secondary-actions { grid-template-columns: 1fr; gap: 10px; }
+            .saved-card { flex-direction: column; align-items: flex-start; }
+            .saved-card-actions { align-self: flex-end; }
+        }
+    </style>
+</head>
+<body>
+
+    <main class="container">
+        <header class="header">
+            <h1>AI Idea Generator</h1>
+            <p class="subtitle">Discover millions of innovative startup, app, and business ideas instantly.</p>
+        </header>
+
+        <nav class="categories" id="tabs">
+            <button class="tab active" data-category="tech">🤖 Tech & SaaS</button>
+            <button class="tab" data-category="agents">🧠 AI Agents</button>
+            <button class="tab" data-category="fintech">💳 Fintech</button>
+            <button class="tab" data-category="creators">🎨 Creator Economy</button>
+            <button class="tab" data-category="health">🏥 Digital Health</button>
+            <button class="tab" data-category="green">🌱 Climate Tech</button>
+        </nav>
+
+        <section class="idea-display">
+            <div id="result">Click Generate to unleash creativity ✨</div>
+        </section>
+
+        <div class="primary-action">
+            <button class="btn-generate" onclick="generateIdea()">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+                Generate Brilliant Idea
+            </button>
+        </div>
+
+        <div class="secondary-actions">
+            <button class="btn-sec" onclick="copyIdea()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                Copy Idea
+            </button>
+            <button class="btn-sec" onclick="saveIdea()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
+                Save
+            </button>
+            <button class="btn-sec" onclick="shareIdea()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
+                Share
+            </button>
+        </div>
+
+        <section class="saved-section">
+            <div class="saved-header">
+                <h3>Saved Ideas</h3>
+                <span class="badge" id="statsCounter">0 saved</span>
+            </div>
+            <div class="saved-grid" id="savedList">
+                <div class="empty-state">No ideas saved yet. Generate and save your favorites!</div>
+            </div>
+        </section>
+    </main>
+
+    <div class="toast" id="toast">✅ Action successful</div>
+
+    <script>
+        // Highly expanded database
+        const ideaDatabase = {
+            tech: {
+                prefixes: ['API-first', 'Serverless', 'Blockchain-based', 'Quantum', 'Cloud-native', 'IoT-enabled', 'AR/VR', 'Edge-computing', 'Open-source', 'Headless'],
+                subjects: ['smart home automation', 'predictive maintenance', 'cybersecurity defense', 'digital twin creation', 'smart contract marketplace', 'data visualization tool', 'developer environment', 'microservices orchestrator', 'B2B matchmaking platform', 'DevOps pipeline'],
+                benefits: ['that reduces costs by 70%', 'with real-time insights', 'for enterprise use', 'that scales globally', 'with zero-downtime', 'with privacy-first design', 'built for remote teams', 'with native integrations', 'that eliminates technical debt', 'with automated compliance']
+            },
+            agents: {
+                prefixes: ['Autonomous', 'Voice-activated', 'Multi-modal', 'LLM-powered', 'Context-aware', 'Proactive', 'Self-learning', 'Conversational', 'Domain-specific', 'Personalized'],
+                subjects: ['customer support agent', 'executive assistant', 'code review bot', 'legal research tool', 'sales outreach SDR', 'data analysis agent', 'content repurposing engine', 'email triage system', 'travel booking concierge', 'financial analyst'],
+                benefits: ['that works 24/7', 'capable of complex reasoning', 'with memory retention', 'that connects to any API', 'with human-in-the-loop oversight', 'that speaks 50+ languages', 'trained on internal company data', 'with emotional intelligence', 'that auto-corrects hallucinations', 'that executes web actions']
+            },
+            fintech: {
+                prefixes: ['Decentralized', 'Algorithmic', 'Fractional', 'Embedded', 'Peer-to-peer', 'AI-driven', 'Cross-border', 'Micro-investing', 'Automated', 'Tokenized'],
+                subjects: ['lending platform', 'wealth management app', 'payroll system', 'expense tracker', 'invoice factoring tool', 'real estate investment platform', 'subscription manager', 'credit scoring model', 'treasury management system', 'carbon credit exchange'],
+                benefits: ['for gig workers', 'with zero hidden fees', 'that settles instantly', 'for Gen Z', 'with tax-loss harvesting', 'that bypasses traditional banks', 'for emerging markets', 'with biometric security', 'that auto-reinvests dividends', 'for DAO treasuries']
+            },
+            creators: {
+                prefixes: ['No-code', 'Web3', 'Community-driven', 'Token-gated', 'AI-assisted', 'All-in-one', 'Mobile-first', 'Interactive', 'Data-driven', 'Subscription-based'],
+                subjects: ['monetization platform', 'audience analytics dashboard', 'merch design tool', 'course builder', 'collaboration network', 'royalty splitting smart contract', 'link-in-bio alternative', 'podcast editing suite', 'fan engagement app', 'newsletter engine'],
+                benefits: ['for streamers', 'that eliminates platform fees', 'with instant payouts', 'for indie hackers', 'that owns the audience relationship', 'with built-in viral loops', 'for micro-influencers', 'that discovers sponsorships', 'with automated copyright protection', 'for digital artists']
+            },
+            health: {
+                prefixes: ['Wearable', 'Telemedicine', 'Genomic', 'Remote patient', 'Personalized', 'Biohacking', 'Digital therapeutic', 'Non-invasive', 'Continuous', 'AI-diagnostic'],
+                subjects: ['monitoring system', 'therapy platform', 'longevity tracker', 'sleep optimization engine', 'virtual physiotherapy', 'stress management app', 'diet & microbiome planner', 'fertility tracker', 'mental health companion', 'post-op recovery guide'],
+                benefits: ['for the elderly', 'using computer vision', 'that prevents chronic diseases', 'with doctor dashboard integration', 'that\'s HIPAA compliant', 'for high-performance athletes', 'with passive data collection', 'for busy professionals', 'that gamifies rehab', 'with predictive alerts']
+            },
+            green: {
+                prefixes: ['Solar-powered', 'Carbon-negative', 'Zero-waste', 'Sustainable', 'Electric', 'Water-saving', 'Circular', 'Biodegradable', 'Smart-grid', 'Upcycled'],
+                subjects: ['food waste marketplace', 'commute optimizer', 'packaging solution', 'building energy manager', 'supply chain tracker', 'micro-mobility platform', 'carbon offset API', 'regenerative agriculture sensor', 'home energy storage', 'fast-fashion alternative'],
+                benefits: ['for smart cities', 'that verifies claims via blockchain', 'for eco-conscious consumers', 'that gamifies sustainability', 'for corporate ESG reporting', 'that reduces grid reliance', 'for local restaurants', 'with carbon footprint analytics', 'that rewards green habits', 'for commercial real estate']
+            }
+        };
+
+        let currentCategory = 'tech';
+        let savedIdeas = [];
+        let currentIdea = '';
+        const resultEl = document.getElementById('result');
+
+        // Tab Event Listeners
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                document.querySelector('.tab.active').classList.remove('active');
+                tab.classList.add('active');
+                currentCategory = tab.dataset.category;
+                tab.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+            });
+        });
+
+        function generateIdea() {
+            resultEl.classList.add('loading');
+            
+            setTimeout(() => {
+                const category = ideaDatabase[currentCategory];
+                const prefix = category.prefixes[Math.floor(Math.random() * category.prefixes.length)];
+                const subject = category.subjects[Math.floor(Math.random() * category.subjects.length)];
+                const benefit = category.benefits[Math.floor(Math.random() * category.benefits.length)];
+                
+                // Smart phrasing combinations
+                const ideaTypes = [
+                    `${prefix} ${subject} ${benefit}`,
+                    `A ${prefix.toLowerCase()} ${subject} ${benefit}`,
+                    `${prefix} ${subject} for the modern era`,
+                    `A platform for ${subject} ${benefit}`,
+                    `The ultimate ${prefix.toLowerCase()} ${subject}`
+                ];
+                
+                currentIdea = ideaTypes[Math.floor(Math.random() * ideaTypes.length)];
+                
+                resultEl.textContent = currentIdea;
+                resultEl.classList.remove('loading');
+            }, 200); // UI delay for transition
+        }
+
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.innerHTML = message;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 2500);
+        }
+
+        function copyIdea() {
+            if (!currentIdea) return;
+            navigator.clipboard.writeText(currentIdea).then(() => {
+                showToast('📋 Idea copied to clipboard!');
+            });
+        }
+
+        function shareIdea() {
+            if (!currentIdea) return;
+            const text = `💡 Startup Idea: "${currentIdea}"\nGenerated by AI Idea Pro`;
+            navigator.clipboard.writeText(text).then(() => {
+                showToast('📤 Shareable text copied!');
+            });
+        }
+
+        function saveIdea() {
+            if (!currentIdea || savedIdeas.includes(currentIdea)) {
+                if(savedIdeas.includes(currentIdea)) showToast('⚠️ Idea already saved!');
+                return;
+            }
+            
+            savedIdeas.unshift(currentIdea); // Add to top
+            updateSavedList();
+            showToast('💾 Idea saved successfully!');
+        }
+
+        function deleteIdea(ideaText) {
+            savedIdeas = savedIdeas.filter(idea => idea !== ideaText);
+            updateSavedList();
+        }
+
+        function updateSavedList() {
+            document.getElementById('statsCounter').textContent = `${savedIdeas.length} saved`;
+            const listEl = document.getElementById('savedList');
+            
+            if (savedIdeas.length === 0) {
+                listEl.innerHTML = '<div class="empty-state">No ideas saved yet. Generate and save your favorites!</div>';
+                return;
+            }
+
+            listEl.innerHTML = savedIdeas.map(idea => `
+                <div class="saved-card">
+                    <p>${idea}</p>
+                    <div class="saved-card-actions">
+                        <button class="icon-btn" onclick="navigator.clipboard.writeText('${idea}'); showToast('📋 Copied!')" title="Copy">
+                            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                        </button>
+                        <button class="icon-btn" onclick="deleteIdea('${idea}')" title="Delete">
+                            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Generate first idea on load
+        setTimeout(generateIdea, 500);
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') generateIdea();
+        });
+    </script>
+</body>
+</html>

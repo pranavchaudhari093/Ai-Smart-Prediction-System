@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>AI Smart | Premium Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='user_dashboard.css') }}">
+</head>
+<body>
+
+<div class="blob-container">
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+</div>
+
+<div class="dashboard-wrapper">
+    <!-- Sidebar Overlay for Mobile -->
+    <div class="sidebar-overlay" id="sidebar-overlay"></div>
+    
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-content">
+            <div class="logo-area">
+                <span>💻</span>
+                <span>AI Smart</span>
+            </div>
+
+            <div class="profile-section">
+                <div class="avatar-container">
+                    <img src="{% if user.photo %}/static/uploads/{{ user.photo }}{% else %}/static/default.png{% endif %}" alt="Profile">
+                    <label for="file-upload" class="camera-overlay">
+                        📷
+                    </label>
+                    <form id="profileForm" action="/upload_profile" method="POST" enctype="multipart/form-data">
+                        <input id="file-upload" type="file" name="photo" onchange="document.getElementById('profileForm').submit()" hidden>
+                    </form>
+                </div>
+                <h3>{{ user.name }}</h3>
+                <p class="badge">SMART MEMBER</p>
+            </div>
+
+            <nav class="nav-menu">
+                <p class="nav-label">Main Menu</p>
+                <a href="/" class="nav-link active"><span>📋</span> Overview</a>
+                
+                <p class="nav-label">AI Intelligence</p>
+                <a href="/select_report_date" class="nav-link"><span>📏</span> Generate Report</a>
+                <a href="/analytics" class="nav-link"><span>📋</span> Model Analytics</a>
+               
+                
+                
+                <p class="nav-label">All Models</p>
+                <select class="nav-dropdown" onchange="if(this.value) location.href=this.value">
+                    <option value="">Select Model</option>
+                    <option value="/student">🎓 Student Performance</option>
+                    <option value="/house">🏠 House Price</option>
+                    <option value="/heart">❤️ Heart Disease</option>
+                    <option value="/spam">📧 Spam Detection</option>
+                    <option value="/fake">📰 Fake News</option>
+                    <option value="/loan">💰 Loan Approval</option>
+                </select>
+
+                <div class="nav-footer">
+                    <a href="/logout" class="nav-link logout"><span>💪</span> Sign Out</a>
+                </div>
+            </nav>
+        </div>
+    </aside>
+
+    <main class="main-content">
+        <header class="top-bar">
+            <div class="welcome-text">
+                <h1 id="greeting">Welcome back, {{ user.name }}</h1>
+                <p>System Status: <span class="status-online">Online</span> • <span id="display-date"></span></p>
+            </div>
+            <button class="mobile-menu-btn" onclick="toggleSidebar()">
+                <span>&#9776;</span>
+            </button>
+        </header>
+
+        <section class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon purple"><span>📊</span></div>
+                <div class="stat-data">
+                    <p>Total Predictions</p>
+                    <h3>{{ prediction_count }}</h3>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon green"><span>✅</span></div>
+                <div class="stat-data">
+                    <p>Model Accuracy</p>
+                    <h3>94.2%</h3>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon blue"><span>⚡</span></div>
+                <div class="stat-data">
+                    <p>Avg. Latency</p>
+                    <h3>24ms</h3>
+                </div>
+            </div>
+        </section>
+
+        <section class="quick-tools-buttons">
+            <a href="/summarizer" class="quick-btn">📝 Summarizer</a>
+            <a href="/word_counter" class="quick-btn">📊 Counter</a>
+            <a href="/password" class="quick-btn">🔐 Password</a>
+            <a href="/sentiment" class="quick-btn">💭 Sentiment</a>
+            <a href="/name_generator" class="quick-btn">✨ Name Gen</a>
+            <a href="/idea" class="quick-btn">💡 Ideas</a>
+        </section>
+
+        
+<script src="{{ url_for('static', filename='js/script.js') }}"></script>
+
+</body>
+</html>
+
+</body>
+</html>

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spam Detection AI</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/spam.css">
+</head>
+<body class="page-spam">
+
+<div class="background-blobs">
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+</div>
+
+<div class="spam-card">
+    <div class="card-header">
+        <div class="icon-circle">
+            <span class="icon">🛡️</span>
+        </div>
+        <h2>Spam Email Detection</h2>
+        <p>AI-powered security for your inbox</p>
+    </div>
+
+    <form method="POST" action="/spam_predict">
+        <div class="input-group">
+            <textarea name="email" placeholder="Paste email content here to analyze..." required></textarea>
+        </div>
+
+        <!-- BUTTON GROUP -->
+        <div class="btn-group">
+            <button type="submit" class="analyze-btn">
+                Analyze Message
+                <span class="btn-shine"></span>
+            </button>
+
+            <button type="button" class="analyze-btn reset-btn"
+                onclick="window.location.href='/spam'">
+                Reset
+            </button>
+        </div>
+    </form>
+
+    {% if result %}
+    <div class="result-box animate-in {{ 'danger' if 'SPAM' in result else 'success' }}">
+        <small>Analysis Result:</small>
+        <h3>{{ result }}</h3>
+    </div>
+    {% endif %}
+
+    <div class="footer-links">
+        <a href="/" class="back-link">
+            <span class="arrow">←</span> Back to Dashboard
+        </a>
+    </div>
+</div>
+
+</body>
+</html>

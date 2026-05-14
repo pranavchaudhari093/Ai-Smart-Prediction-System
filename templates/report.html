@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Prediction Report - {{date}}</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-bg: #0f0f23;
+            --card-bg: rgba(20, 25, 45, 0.95);
+            --border-color: rgba(255, 255, 255, 0.08);
+            --text-primary: #ffffff;
+            --text-secondary: rgba(255, 255, 255, 0.8);
+            --accent-blue: #4f67f9;
+            --accent-green: #10b981;
+            --shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            --border-radius: 16px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--primary-bg);
+            color: var(--text-primary);
+            line-height: 1.6;
+            padding: 40px 20px;
+            min-height: 100vh;
+        }
+
+        .report-container {
+            max-width: 1100px;
+            margin: 0 auto;
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+        }
+
+        /* REPORT HEADER */
+        .report-header {
+            background: linear-gradient(135deg, var(--accent-blue) 0%, #6366f1 100%);
+            padding: 40px 40px 30px;
+            text-align: center;
+            color: white;
+        }
+
+        .report-title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 10px;
+            letter-spacing: -0.02em;
+        }
+
+        .report-subtitle {
+            font-size: 1.3rem;
+            opacity: 0.95;
+            margin-bottom: 20px;
+        }
+
+        .report-date {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 12px 24px;
+            border-radius: 50px;
+            display: inline-block;
+            font-weight: 600;
+            font-size: 1.1rem;
+            backdrop-filter: blur(10px);
+        }
+
+        /* MAIN CONTENT */
+        .report-content {
+            padding: 50px 40px;
+        }
+
+        .report-section {
+            margin-bottom: 50px;
+        }
+
+        .section-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 3px solid var(--accent-blue);
+            display: inline-block;
+        }
+
+        /* RESULTS TABLE */
+        .results-table-wrapper {
+            overflow-x: auto;
+            margin-bottom: 40px;
+        }
+
+        .results-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .results-table th {
+            background: rgba(79, 103, 249, 0.2);
+            color: var(--text-primary);
+            padding: 18px 20px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 0.95rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .results-table td {
+            padding: 18px 20px;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-secondary);
+        }
+
+        .results-table tr:hover td {
+            background: rgba(79, 103, 249, 0.05);
+        }
+
+        .prediction-value {
+            font-weight: 700;
+            font-size: 1.2rem;
+            color: var(--accent-green);
+            background: rgba(16, 185, 129, 0.1);
+            padding: 6px 12px;
+            border-radius: 6px;
+            display: inline-block;
+        }
+
+        /* GRAPH SECTION */
+        .chart-section {
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 16px;
+            padding: 30px;
+            margin-bottom: 40px;
+            border: 1px solid var(--border-color);
+        }
+
+        .chart-container {
+            position: relative;
+            height: 450px;
+            margin: 20px 0;
+        }
+
+        /* EXPLANATION */
+        .explanation-section {
+            background: rgba(79, 103, 249, 0.05);
+            border: 1px solid rgba(79, 103, 249, 0.15);
+            border-radius: 12px;
+            padding: 30px;
+        }
+
+        .explanation-text {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: var(--text-secondary);
+        }
+
+        .explanation-list {
+            list-style: none;
+            margin-top: 20px;
+        }
+
+        .explanation-list li {
+            padding: 12px 0;
+            padding-left: 30px;
+            position: relative;
+            color: var(--text-secondary);
+        }
+
+        .explanation-list li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: var(--accent-green);
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        /* DOWNLOAD BUTTON */
+        .download-section {
+            text-align: center;
+            padding: 50px 0;
+            border-top: 1px solid var(--border-color);
+            background: rgba(255, 255, 255, 0.01);
+        }
+
+        .download-btn {
+            background: linear-gradient(135deg, var(--accent-blue) 0%, #6366f1 100%);
+            color: white;
+            border: none;
+            padding: 18px 40px;
+            font-size: 1.15rem;
+            font-weight: 600;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 15px 35px rgba(79, 103, 249, 0.3);
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+        }
+
+        .download-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 25px 50px rgba(79, 103, 249, 0.4);
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            body {
+                padding: 20px 15px;
+            }
+            
+            .report-header {
+                padding: 30px 25px;
+            }
+            
+            .report-title {
+                font-size: 2rem;
+            }
+            
+            .report-content {
+                padding: 30px 25px;
+            }
+            
+            .results-table {
+                font-size: 0.9rem;
+            }
+            
+            .chart-container {
+                height: 350px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .results-table-wrapper {
+                overflow-x: auto;
+            }
+            
+            .results-table th,
+            .results-table td {
+                padding: 12px 10px;
+                font-size: 0.85rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="report-container">
+        <!-- REPORT HEADER -->
+        <div class="report-header">
+            <h1 class="report-title">AI Prediction Report</h1>
+            <h2 class="report-subtitle">Machine Learning Analysis Results</h2>
+            <div class="report-date">
+                Generated on: {{date}}
+            </div>
+        </div>
+
+        <div class="report-content">
+            <!-- USER INFORMATION SECTION -->
+            <div class="report-section" style="background: rgba(79, 103, 249, 0.08); padding: 20px; border-radius: 12px; border: 1px solid rgba(79, 103, 249, 0.15); margin-bottom: 30px;">
+                <h3 class="section-title" style="margin-bottom: 15px; border: none; padding: 0;">👤 User Information</h3>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                    <div>
+                        <p style="color: rgba(255, 255, 255, 0.6); font-size: 0.9rem; margin-bottom: 5px;">User Name</p>
+                        <p style="color: #ffffff; font-weight: 600; font-size: 1.1rem;">{{ user.name }}</p>
+                    </div>
+                    <div>
+                        <p style="color: rgba(255, 255, 255, 0.6); font-size: 0.9rem; margin-bottom: 5px;">Email Address</p>
+                        <p style="color: #ffffff; font-weight: 600; font-size: 1.1rem;">{{ user.email }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PREDICTION RESULTS -->
+            <div class="report-section">
+                <h3 class="section-title">📊 Prediction Results</h3>
+                <div class="results-table-wrapper">
+                    <table class="results-table">
+                        <thead>
+                            <tr>
+                                <th>Model Name</th>
+                                <th>Prediction Value</th>
+                                <th>Analysis Time</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for row in data %}
+                            <tr>
+                                <td>{{row[0]}}</td>
+                                <td><span class="prediction-value">{{row[1]}}</span></td>
+                                <td>{{row[2]}}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- QUICK TOOLS USAGE -->
+            <div class="report-section">
+                <h3 class="section-title">⚡ Quick Tools Usage</h3>
+                <div class="results-table-wrapper">
+                    <table class="results-table">
+                        <thead>
+                            <tr>
+                                <th>Tool Name</th>
+                                <th>Usage Time</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% if quick_tools %}
+                                {% for row in quick_tools %}
+                                <tr>
+                                    <td>{{row[0]}}</td>
+                                    <td>{{row[1]}}</td>
+                                </tr>
+                                {% endfor %}
+                            {% else %}
+                                <tr>
+                                    <td colspan="2" style="text-align: center; color: rgba(255, 255, 255, 0.5);">No quick tools used on this date</td>
+                                </tr>
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- CHART SECTION - CLEAR BAR CHART -->
+            <div class="report-section">
+                <h3 class="section-title">📈 Model Performance</h3>
+                <div class="chart-section">
+                    <div class="chart-container">
+                        <canvas id="predictionChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- EXPLANATION -->
+            <div class="report-section">
+                <h3 class="section-title">📋 Report Summary</h3>
+                <div class="explanation-section">
+                    <div class="explanation-text">
+                        <strong>What this report shows:</strong>
+                    </div>
+                    <ul class="explanation-list">
+                        <li>Prediction values from multiple AI models (higher = more confident)</li>
+                        <li>Each model analyzes different data patterns</li>
+                        <li>Results formatted as percentages for easy understanding</li>
+                        <li>Time taken for each model analysis</li>
+                        <li>Visual comparison across all models</li>
+                    </ul>
+                    <div class="explanation-text" style="margin-top: 20px;">
+                        <strong>Next Steps:</strong> Use these predictions for decision making, trend analysis, and performance monitoring.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- DOWNLOAD -->
+        <div class="download-section">
+            <form action="/generate_report" method="post" style="display: inline;">
+                <input type="hidden" name="date" value="{{date}}">
+                <button type="submit" class="download-btn">
+                    📥 Download PDF Report
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Simple, CLEAR Bar Chart with PROPER VALUES
+        const labels = [{% for row in raw_data %}"{{row[0]}}",{% endfor %}];
+        const values = [{% for row in raw_data %}{{ "%.2f"|format(row[1]) }},{% endfor %}];
+
+        const ctx = document.getElementById('predictionChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'bar',  // CLEAR BAR CHART
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Prediction Score (%)',
+                    data: values,
+                    backgroundColor: 'rgba(79, 103, 249, 0.8)',
+                    borderColor: '#4f67f9',
+                    borderWidth: 2,
+                    borderRadius: 8,
+                    borderSkipped: false,
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'top',
+                        labels: {
+                            color: '#ffffff',
+                            font: { size: 14, weight: '600' }
+                        }
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(0,0,0,0.9)',
+                        titleColor: 'white',
+                        bodyColor: 'white',
+                        callbacks: {
+                            label: function(context) {
+                                return context.dataset.label + ': ' + context.parsed.y + '%';
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 100,
+                        ticks: {
+                            color: 'rgba(255,255,255,0.8)',
+                            font: { size: 12 },
+                            callback: function(value) { return value + '%'; }
+                        },
+                        grid: { color: 'rgba(255,255,255,0.1)' }
+                    },
+                    x: {
+                        ticks: {
+                            color: 'rgba(255,255,255,0.8)',
+                            font: { size: 12 }
+                        },
+                        grid: { display: false }
+                    }
+                },
+                animation: {
+                    duration: 1500
+                }
+            }
+        });
+    </script>
+</body>
+</html>
